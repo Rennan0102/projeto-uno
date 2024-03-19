@@ -1,5 +1,7 @@
 module entidades.Jogador;
 
+import entidades.Carta;
+
 export class Jogador {
     private Carta[] cartas;
     private string nome;

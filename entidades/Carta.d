@@ -1,32 +1,42 @@
 module entidades.Carta;
 
-export class Carta {
-    
+export abstract class Carta
+{
     protected string nome;
-    protected EnumCarta tipoCarta;  
 
-    public this(EnumCarta tipoCarta, string nome) {
-        this.tipoCarta = tipoCarta;
+    public this(string nome)
+    {
         this.nome = nome;
-    } 
+    }
 
 }
 
-export class CartaComum : Carta {
+export class CartaComum : Carta
+{
 
-    private EnumCorCarta cor;
+    private string cor;
 
-     public this(EnumCarta tipoCarta, string nome, EnumCorCarta cor) {
-        super(tipoCarta, nome);
+    public this(string nome, string cor)
+    {
+        super(nome);
         this.cor = cor;
-    } 
+    }
 
 }
 
 export class CartaEspecial : Carta {
-
-} 
+    public this(string nome) {
+        super(nome);
+    }
+}
 
 export class CartaJoker : Carta {
 
-} 
+    public this(string nome) {
+        super(nome);
+    }
+}
+
+
+
+
