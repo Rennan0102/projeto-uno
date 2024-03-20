@@ -7,10 +7,10 @@ export class Jogador {
     private string nome;
     private bool vez;
 
-    this(string nome, Carta[] cartas, bool vez) {
+    this(string nome, bool vez) {
         this.nome = nome;
-        this.cartas = cartas;
         this.vez = vez;
+        this.cartas = [];
     }
 
     public string getNome() {
@@ -36,4 +36,8 @@ export class Jogador {
     public void setVez(bool novaVez) {
         vez = novaVez;
     }
+
+     public void adicionarCarta(Carta carta ) {
+        cartas ~= carta;
+    }  
 }

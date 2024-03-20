@@ -9,6 +9,10 @@ export abstract class Carta
         this.nome = nome;
     }
 
+    public string getNome() {
+        return nome;
+    }
+
 }
 
 export class CartaComum : Carta
@@ -22,11 +26,8 @@ export class CartaComum : Carta
         this.cor = cor;
     }
 
-}
-
-export class CartaEspecial : Carta {
-    public this(string nome) {
-        super(nome);
+    public string getCor() {
+        return cor;
     }
 }
 

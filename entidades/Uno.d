@@ -2,6 +2,8 @@ module entidades.Uno;
 
 import std.stdio;
 import std.conv;
+import std.random;
+import std.range;
 
 import entidades.Carta;
 import entidades.Jogador;
@@ -25,7 +27,8 @@ export class Uno
   public this()
   {
     this.cartasNumeracao = [
-      "Zero", "Um", "Dois", "Tres", "Quatro", "Cinco", "Seis", "Sete", "Oito", "Nove"
+      "Zero", "Um", "Dois", "Tres", "Quatro", "Cinco", "Seis", "Sete", "Oito",
+      "Nove"
     ];
     this.cartaEspecial = [
       "Bloqueio", "Inverter", "Mais2"
@@ -39,35 +42,47 @@ export class Uno
   {
 
     // Cartas numeradas de 0 a 9 para cada cor
-    foreach (string cor; corCarta) {
-        foreach (string numero; cartasNumeracao) {
-            if (numero == "Zero") {
-                cartas ~= new CartaComum(numero, numero);
-            } else {
-                for (int i = 0; i < 2; i++) {
-                    cartas ~= new CartaComum(numero, numero);
-                }
-            }
+    foreach (string cor; corCarta)
+    {
+      foreach (string numero; cartasNumeracao)
+      {
+        if (numero == "Zero")
+        {
+          cartas ~= new CartaComum(numero, cor);
         }
+        else
+        {
+          cartas ~= new CartaComum(numero, cor);
+          cartas ~= new CartaComum(numero, cor);
+
+        }
+      }
     }
 
-        // Cartas especiais
-    foreach (string cor; corCarta) {
-        foreach (string especial; cartaEspecial) {
-            foreach (_; 0..2) {
-                cartas ~= new CartaEspecial(especial);
-            }
-        }
+    // Cartas especiais
+    foreach (string cor; corCarta)
+    {
+      foreach (string especial; cartaEspecial)
+      {
+        cartas ~= new CartaComum(especial, cor);
+        cartas ~= new CartaComum(especial, cor);
+      }
     }
 
     // Cartas coringas
-    foreach (_; 0..4) {
-        foreach (string joker; this.jokers)
-        {
-           cartas ~= new CartaJoker(joker);
-           cartas ~= new CartaJoker(joker);     
-        }
+
+    foreach (string joker; this.jokers)
+    {
+      foreach (_; 0 .. 4)
+      {
+        cartas ~= new CartaJoker(joker);
+      }
     }
+  }
+
+  public Carta[] getCartas()
+  {
+    return cartas;
   }
 
   public void telaInicial()
@@ -102,6 +117,26 @@ export class Uno
       writeln("hhhhhhhhhhhdhhhhhhhhhhddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
       writeln("hhhhhhhhhhhhhhhdddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
     }
+  }
+
+  public void embaralharCartas() {
+     randomShuffle(cartas);
+  }
+
+  public void distribuirCartas() {
+     foreach (Jogador jogador; jogadores)
+     {
+       Carta[] cartasDoJogador = cartas.take(7).array();
+
+       jogador.setCartas(cartasDoJogador);
+     }
+  }
+
+
+  public void main() {
+     this.gerarCartas();
+     this.embaralharCartas();
+     this.distribuirCartas();
   }
 
 }
