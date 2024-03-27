@@ -3,22 +3,22 @@ module entidades.Jogador;
 import entidades.Carta;
 
 export class Jogador {
-    private Carta[] cartas;
+    private Carta[] maoJogador;
     private string nome;
     private bool vez;
 
     this(string nome, bool vez) {
         this.nome = nome;
         this.vez = vez;
-        this.cartas = [];
+        this.maoJogador = [];
     }
 
     public string getNome() {
         return nome;
     }
 
-    public Carta[] getCartas() {
-        return cartas;
+    public Carta[] getMaoJogador() {
+        return maoJogador;
     }
 
     public bool getVez() {
@@ -29,15 +29,11 @@ export class Jogador {
         nome = novoNome;
     }
 
-    public void setCartas(Carta[] novasCartas) {
-        cartas = novasCartas;
-    }
-
     public void setVez(bool novaVez) {
         vez = novaVez;
     }
 
-     public void adicionarCarta(Carta carta ) {
-        cartas ~= carta;
+    public void adicionarCarta(Carta carta) {
+        maoJogador ~= carta;
     }  
 }

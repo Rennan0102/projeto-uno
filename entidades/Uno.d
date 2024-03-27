@@ -8,8 +8,7 @@ import std.range;
 import entidades.Carta;
 import entidades.Jogador;
 
-export class Uno
-{
+export class Uno {
   public static numeroCartaEspecial = 8;
   public static numeroCartaJoker = 4;
 
@@ -123,20 +122,9 @@ export class Uno
      randomShuffle(cartas);
   }
 
-  public void distribuirCartas() {
-     foreach (Jogador jogador; jogadores)
-     {
-       Carta[] cartasDoJogador = cartas.take(7).array();
-
-       jogador.setCartas(cartasDoJogador);
-     }
-  }
-
-
   public void main() {
      this.gerarCartas();
      this.embaralharCartas();
-     this.distribuirCartas();
   }
 
 }
