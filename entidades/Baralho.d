@@ -5,6 +5,7 @@ import entidades.Uno;
 import entidades.Carta;
 import std.container;
 import std.range;
+//import std.algorithm : shuffle;
 
 export class Baralho {
     static Carta[] cartasBaralho;
@@ -34,18 +35,24 @@ export class Baralho {
             cartasBaralho ~= carta;
         }
     }
-
+/*
     public static void embaralhar(){
          // Embaralhar as cartas no baralho
         cartasBaralho.shuffle();
 
     }
+*/
 
-    /*
     
+   /* 
     public static void embaralharCartas() {
         randomShuffle(cartas);
+    }*/
+/*
+    // Função para embaralhar um array de cartas
+    void embaralharCartas(ref Carta[] cartas) {
+        cartas.shuffle();
     }
-    */
-
+    
+*/
 }

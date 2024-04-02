@@ -123,4 +123,10 @@ export class Uno {
      embaralharCartas();
   }
 
+  public static void embaralharCartas() {
+        randomShuffle(cartas);
+    }
+
+
+
 }
