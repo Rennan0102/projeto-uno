@@ -35,4 +35,10 @@ export class Baralho {
         }
     }
 
+    public static void embaralhar(){
+         // Embaralhar as cartas no baralho
+        cartasBaralho.shuffle();
+
+    }
+
 }
