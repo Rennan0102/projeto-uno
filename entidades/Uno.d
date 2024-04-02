@@ -117,9 +117,6 @@ export class Uno {
     }
   }
 
-  public static void embaralharCartas() {
-    randomShuffle(cartas);
-  }
 
   public static void main() {
      gerarCartas();

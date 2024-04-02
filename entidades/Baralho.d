@@ -41,4 +41,11 @@ export class Baralho {
 
     }
 
+    /*
+    
+    public static void embaralharCartas() {
+        randomShuffle(cartas);
+    }
+    */
+
 }
