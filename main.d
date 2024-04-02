@@ -1,15 +1,14 @@
 import std.stdio;
 import entidades.Carta;
 import entidades.Uno;
+import entidades.Baralho;
+import entidades.Jogador;
+import std.container;
 
-void main()
-{
+void main(){
 
-    Uno uno = new Uno();
-
-    uno.main();
-
-    foreach (Carta carta; uno.getCartas())
+    Uno.main();
+    foreach (Carta carta; Uno.getCartas())
     {
         if (typeid(carta) != typeid(CartaJoker))
         {
@@ -22,6 +21,9 @@ void main()
         }
     }
 
-    writeln(uno.getCartas().length);
+    writeln(Uno.getCartas().length);
+
+    Jogador j1 = new Jogador("Ren", true);
+    Baralho.distribuirCartas(j1, 7);
 
 }

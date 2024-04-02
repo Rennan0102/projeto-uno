@@ -12,32 +12,32 @@ export class Uno {
   public static numeroCartaEspecial = 8;
   public static numeroCartaJoker = 4;
 
-  public string[] cartasNumeracao;
-  public string[] cartaEspecial;
-  private string[] corCarta;
-  private string[] cartaSentido;
-  private string[] jokers;
+  public static string[] cartasNumeracao;
+  public static string[] cartaEspecial;
+  private static string[] corCarta;
+  private static string[] cartaSentido;
+  private static string[] jokers;
 
-  private Carta[] cartas;
-  private Jogador[] jogadores;
-  private Carta[] cartasUsadas;
-  private string sentidoRotacao;
+  private static Carta[] cartas;
+  private static Jogador[] jogadores;
+  private static Carta[] cartasUsadas;
+  private static string sentidoRotacao;
 
-  public this()
+  public static this()
   {
-    this.cartasNumeracao = [
+    cartasNumeracao = [
       "Zero", "Um", "Dois", "Tres", "Quatro", "Cinco", "Seis", "Sete", "Oito",
       "Nove"
     ];
-    this.cartaEspecial = [
+    cartaEspecial = [
       "Bloqueio", "Inverter", "Mais2"
     ];
-    this.jokers = ["Joker", "JokerMais4"];
-    this.corCarta = ["vermelho", "azul", "verde", "amarelo"];
-    this.cartaSentido = ["esquerda", "direita"];
+    jokers = ["Joker", "JokerMais4"];
+    corCarta = ["vermelho", "azul", "verde", "amarelo"];
+    cartaSentido = ["esquerda", "direita"];
   }
 
-  public void gerarCartas()
+  public static void gerarCartas()
   {
 
     // Cartas numeradas de 0 a 9 para cada cor
@@ -79,12 +79,11 @@ export class Uno {
     }
   }
 
-  public Carta[] getCartas()
-  {
+  public static Carta[] getCartas(){
     return cartas;
   }
 
-  public void telaInicial()
+  public static void telaInicial()
   {
     {
 
@@ -118,13 +117,13 @@ export class Uno {
     }
   }
 
-  public void embaralharCartas() {
-     randomShuffle(cartas);
+  public static void embaralharCartas() {
+    randomShuffle(cartas);
   }
 
-  public void main() {
-     this.gerarCartas();
-     this.embaralharCartas();
+  public static void main() {
+     gerarCartas();
+     embaralharCartas();
   }
 
 }
