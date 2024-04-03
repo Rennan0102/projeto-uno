@@ -3,14 +3,15 @@ module entidades.Baralho;
 import entidades.Jogador;
 import entidades.Uno;
 import entidades.Carta;
+
 import std.container;
 import std.range;
-//import std.algorithm : shuffle;
+import std.random;
 
 export class Baralho {
-    static Carta[] cartasBaralho;
+    private static Carta[] cartasBaralho;
 
-    static this(){
+    public static void inicializarBaralho(){
         foreach (ref carta; Uno.getCartas()){ // Pega todas as cartas criadas em Uno e adiciona no baralho
             cartasBaralho ~= carta;
         }
@@ -35,24 +36,13 @@ export class Baralho {
             cartasBaralho ~= carta;
         }
     }
-/*
-    public static void embaralhar(){
-         // Embaralhar as cartas no baralho
-        cartasBaralho.shuffle();
 
+    public static void embaralharCartas(){
+        randomShuffle(cartasBaralho);
     }
-*/
 
-    
-   /* 
-    public static void embaralharCartas() {
-        randomShuffle(cartas);
-    }*/
-/*
-    // Função para embaralhar um array de cartas
-    void embaralharCartas(ref Carta[] cartas) {
-        cartas.shuffle();
+    // Getter
+    public static Carta[] getCartasBaralho(){
+        return cartasBaralho;
     }
-    
-*/
 }

@@ -1,29 +1,31 @@
 import std.stdio;
+import std.container;
+
 import entidades.Carta;
 import entidades.Uno;
 import entidades.Baralho;
 import entidades.Jogador;
-import std.container;
 
 void main(){
 
     Uno.main();
-    foreach (Carta carta; Uno.getCartas())
-    {
-        if (typeid(carta) != typeid(CartaJoker))
-        {
+    Baralho.inicializarBaralho();
+
+    foreach (Carta carta; Baralho.getCartasBaralho()){
+        if (typeid(carta) != typeid(CartaJoker)){
             CartaComum cartaComum = cast(CartaComum) carta;
-            writeln("Carta ", cartaComum.getNome(), " | Cor ", cartaComum.getCor());
+            //writeln("Carta ", cartaComum.getNome(), " | Cor ", cartaComum.getCor());
+            cartaComum.mostrarCarta();
         }
-        else
-        {
-            writeln("Carta ", carta.getNome());
+        else{
+            //writeln("Carta ", carta.getNome());
+            carta.mostrarCarta();
         }
     }
 
-    writeln(Uno.getCartas().length);
+    writeln(Baralho.getCartasBaralho().length);
 
-    Jogador j1 = new Jogador("Ren", true);
+    Jogador j1 = new Jogador("Rennan");
     Baralho.distribuirCartas(j1, 7);
 
 }

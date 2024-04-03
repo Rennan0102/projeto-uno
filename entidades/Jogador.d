@@ -5,35 +5,38 @@ import entidades.Carta;
 export class Jogador {
     private Carta[] maoJogador;
     private string nome;
-    private bool vez;
+    private bool uno;
 
-    this(string nome, bool vez) {
+    this(string nome) {
         this.nome = nome;
-        this.vez = vez;
-        this.maoJogador = [];
+        this.uno = false;
     }
+
+    public void adicionarCarta(Carta carta) {
+        maoJogador ~= carta;
+    }
+
+    protected void checarUno(){ // Verifica se o Jogador possui apenas uma Carta na mão
+        if (maoJogador.length == 1){
+            uno = true;
+        }
+    }
+
+    // Getters & Setters
 
     public string getNome() {
         return nome;
-    }
-
-    public Carta[] getMaoJogador() {
-        return maoJogador;
-    }
-
-    public bool getVez() {
-        return vez;
     }
 
     public void setNome(string novoNome) {
         nome = novoNome;
     }
 
-    public void setVez(bool novaVez) {
-        vez = novaVez;
+    public Carta[] getMaoJogador() {
+        return maoJogador;
     }
 
-    public void adicionarCarta(Carta carta) {
-        maoJogador ~= carta;
-    }  
+    public bool getIsUno(){
+        return uno;
+    }
 }

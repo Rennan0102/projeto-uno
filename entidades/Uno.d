@@ -2,9 +2,9 @@ module entidades.Uno;
 
 import std.stdio;
 import std.conv;
-import std.random;
 import std.range;
 
+// Lembrar de não importar o Baralho aqui dentro do Uno, pois o Baralho é criado depois do Uno
 import entidades.Carta;
 import entidades.Jogador;
 
@@ -23,8 +23,7 @@ export class Uno {
   private static Carta[] cartasUsadas;
   private static string sentidoRotacao;
 
-  public static this()
-  {
+  public static this(){
     cartasNumeracao = [
       "Zero", "Um", "Dois", "Tres", "Quatro", "Cinco", "Seis", "Sete", "Oito",
       "Nove"
@@ -33,47 +32,35 @@ export class Uno {
       "Bloqueio", "Inverter", "Mais2"
     ];
     jokers = ["Joker", "JokerMais4"];
-    corCarta = ["vermelho", "azul", "verde", "amarelo"];
-    cartaSentido = ["esquerda", "direita"];
+    corCarta = ["Vermelho", "Azul", "Verde", "Amarelo"];
+    cartaSentido = ["Esquerda", "Direita"]; // checar dps
   }
 
-  public static void gerarCartas()
-  {
-
+  public static void gerarCartas(){
     // Cartas numeradas de 0 a 9 para cada cor
-    foreach (string cor; corCarta)
-    {
-      foreach (string numero; cartasNumeracao)
-      {
-        if (numero == "Zero")
-        {
+    foreach (cor; corCarta){
+      foreach (numero; cartasNumeracao){
+        if (numero == "Zero"){
           cartas ~= new CartaComum(numero, cor);
         }
-        else
-        {
+        else{
           cartas ~= new CartaComum(numero, cor);
           cartas ~= new CartaComum(numero, cor);
-
         }
       }
     }
 
     // Cartas especiais
-    foreach (string cor; corCarta)
-    {
-      foreach (string especial; cartaEspecial)
-      {
+    foreach (cor; corCarta){
+      foreach (especial; cartaEspecial){
         cartas ~= new CartaComum(especial, cor);
         cartas ~= new CartaComum(especial, cor);
       }
     }
 
     // Cartas coringas
-
-    foreach (string joker; this.jokers)
-    {
-      foreach (_; 0 .. 4)
-      {
+    foreach (joker; this.jokers){
+      foreach (_; 0 .. 4){
         cartas ~= new CartaJoker(joker);
       }
     }
@@ -83,8 +70,7 @@ export class Uno {
     return cartas;
   }
 
-  public static void telaInicial()
-  {
+  public static void telaInicial(){
     {
 
       writeln("\n--------------------------------------------------------------------------------");
@@ -117,16 +103,7 @@ export class Uno {
     }
   }
 
-
   public static void main() {
-     gerarCartas();
-     embaralharCartas();
+    gerarCartas();
   }
-
-  public static void embaralharCartas() {
-        randomShuffle(cartas);
-    }
-
-
-
 }
