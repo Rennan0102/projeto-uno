@@ -16,10 +16,8 @@ export class Jogador {
         maoJogador ~= carta;
     }
 
-    protected void checarUno(){ // Verifica se o Jogador possui apenas uma Carta na mão
-        if (maoJogador.length == 1){
-            uno = true;
-        }
+    public bool getIsUno(){
+        return maoJogador.length == 1;
     }
 
     // Getters & Setters
@@ -36,7 +34,8 @@ export class Jogador {
         return maoJogador;
     }
 
-    public bool getIsUno(){
-        return uno;
+     override string toString() const {
+        return "Jogador ["~nome~"]";
     }
+
 }
