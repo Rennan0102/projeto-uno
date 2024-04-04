@@ -29,7 +29,6 @@ export class Baralho
         ];
         this.jokers = ["Joker", "JokerMais4"];
         this.corCarta = ["Vermelho", "Azul", "Verde", "Amarelo"];
-        this.cartaSentido = ["Esquerda", "Direita"]; // checar dps
         this.cartasBaralho = [];
     }
 

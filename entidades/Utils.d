@@ -1,60 +1,87 @@
 module entidades.Utils;
 
 import std.stdio;
+import std.algorithm;
+import std.array;
 import std.algorithm.iteration : map;
 import std.conv : to;
 
-class ArrayList(T) {
-    private T[50] array;
+class ArrayList(T)
+{
+    private T[] array;
+    private int size;
 
-    this() {
-        array = [];
+    this()
+    {
+        this.array = [];
     }
 
-    void add(T element) {
+    void add(T element)
+    {
         array ~= element;
+        size++;
     }
 
-    void add(int index, T element) {
-        if (index < 0 || index > array.length) {
+    void add(int index, T element)
+    {
+        if (index < 0 || index > array.length)
+        {
             throw new Exception("Index out of bounds");
         }
+
         array = array[0 .. index] ~ [element] ~ array[index .. $];
+        size++;
     }
 
-    T get(int index) {
-        if (index < 0 || index >= array.length) {
+    T get(int index)
+    {
+        if (index < 0 || index >= array.length)
+        {
             throw new Exception("Index out of bounds");
         }
-        
+
         return array[index];
     }
 
-    void remove(int index) {
-        if (index < 0 || index >= array.length) {
+    void remove(int index)
+    {
+        if (index < 0 || index >= array.length)
+        {
             throw new Exception("Index out of bounds");
         }
         array = array[0 .. index] ~ array[index + 1 .. $];
     }
 
-    void remove(T element) {
-        array = array.filter!(e => e !is element);
+    void remove(T element)
+    {
+        array = array.filter!(x => x !is element).array;
+        size--;
     }
 
-    void clear() {
+    void clear()
+    {
         array = [];
+        size = 0;
     }
 
-    int size() {
-        return array.length;
+    int length()
+    {
+        return size;
     }
 
-    bool isEmpty() {
-        return array.length == 0;
+    bool isEmpty()
+    {
+        return size == 0;
     }
 
-    void print() {
+    void print()
+    {
         writeln(array);
+    }
+
+    public T[] toArray()
+    {
+        return array;
     }
 }
 
@@ -90,27 +117,32 @@ class DataInput
 {
     public static string stringSaida = "-s";
 
-    T SelecionarElemento(T)(T[] elements)
+    public static T SelecionarElemento(T)(T[] elements, int sizeArray, string label)
     {
-        writeln("Selecione um elemento da lista:");
-        foreach (i, element; elements.map!(to!string))
+
+        writeln(label);
+
+        int i = 0;
+
+        foreach (element; elements.map!(to!string))
         {
-            writeln(i + 1, ": ", element);
+            writeln(++i, ": ", element);
         }
 
         int selection;
+        
 
         while (true)
         {
 
             try
             {
-                write("Digite o número correspondente ao elemento desejado: ");
+                writeln("Digite o numero: \n");
                 readf("%d", &selection);
 
-                if (selection >= 1 && selection < elements.length)
+                if (selection >= 1 && selection <= sizeArray)
                 {
-                    return elements[selection];
+                    return elements[selection - 1];
                 }
                 else
                 {

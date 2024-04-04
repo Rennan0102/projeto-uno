@@ -6,10 +6,13 @@ import std.range;
 import entidades.Carta;
 import entidades.Jogador;
 import entidades.Baralho;
+import entidades.RegrasUno;
 import entidades.Utils;
 import std.string;
+import std.random : uniform, uniform01;
 
-class Uno {
+export class Uno
+{
   public static int MAXIMO_JOGADORES = 8;
   public static int NUMERO_CARTAS_JOGADOR = 8;
   public static numeroCartaEspecial = 8;
@@ -20,21 +23,26 @@ class Uno {
   private Stack!Carta cartasUsadas;
   private Jogador jogadorVez;
   private bool jogoEncerrado;
-  private string sentidoRotacao;
+  private bool sentidoInvertido;
+  private RegrasUno regrasUno;
 
-  this() {
+  public this(RegrasUno regrasUno)
+  {
     this.baralho = new Baralho();
     this.cartasUsadas = new Stack!Carta();
     this.jogadores = [];
-    this.sentidoRotacao = "Direita";
-    this,jogoEncerrado = false;
+    this.sentidoInvertido = false;
+    this.jogoEncerrado = false;
+    this.regrasUno = regrasUno;
   }
 
-  public Carta[] getCartas(){
+  public Carta[] getCartas()
+  {
     return this.baralho.getCartasBaralho();
   }
 
-  public void telaInicial(){
+  public void telaInicial()
+  {
     {
 
       writeln("\n--------------------------------------------------------------------------------");
@@ -67,64 +75,143 @@ class Uno {
     }
   }
 
-  public void gerarJogadores() {
+  public void gerarJogadores()
+  {
 
-     int count = 1;
-     string nomeJogador;
+    int count = 1;
+    string nomeJogador;
 
-     while (true) {
+    while (true)
+    {
 
-        writef("Digite o nome do jogador %d \n", count);
-        readf("%s\n", &nomeJogador);
+      writef("Digite o nome do jogador %d \n", count);
+      readf("%s\n", &nomeJogador);
 
-        if (toLower(nomeJogador) == DataInput.stringSaida || count > MAXIMO_JOGADORES)  {
-           break;
-        }
-
-        jogadores ~= new Jogador(nomeJogador);
-        count++;
-     } 
-
-  }
-
-  public void distribuirCartaJogadores() {
-
-     foreach (ref jogador; jogadores)
-     {
-        this.baralho.distribuirCartaJogador(jogador, NUMERO_CARTAS_JOGADOR);
-     }
-
-  }
-
-  public void mostrarJogadores() {
-      foreach (jogador; jogadores)
+      if (toLower(nomeJogador) == DataInput.stringSaida || count > MAXIMO_JOGADORES - 1)
       {
-          writeln(jogador);
-          jogador.mostrarMao();
+        break;
       }
 
-      writeln(this.baralho.getCartasBaralho());
+      jogadores ~= new JogadorReal(nomeJogador);
+      count++;
+    }
+
+    ///jogadores ~= new Bot("Burrinho Artificial");
   }
 
-  // Provavelmente isso não vai ficar aqui 
-  public void comecarJogo() {
+  public void distribuirCartaJogadores()
+  {
 
-    while(!jogoEncerrado) {
-
-
-
-
+    foreach (ref jogador; jogadores)
+    {
+      this.baralho.distribuirCartaJogador(jogador, NUMERO_CARTAS_JOGADOR);
     }
 
   }
 
-  public void main() {
-     this.baralho.gerarCartas();
-     this.baralho.embaralharCartas();
+  public void mostrarJogadores()
+  {
+    foreach (jogador; jogadores)
+    {
+      writeln(jogador);
+      jogador.mostrarMaoCartas();
+    }
 
-     this.gerarJogadores();
-     this.distribuirCartaJogadores();
-
-     this.comecarJogo();
+    writeln(this.baralho.getCartasBaralho());
   }
+
+  public void sortearJogador()
+  {
+    size_t index = uniform(0, jogadores.length);
+
+    this.jogadorVez = jogadores[index];
+  }
+
+  // Provavelmente isso não vai ficar aqui 
+  public void comecarJogo()
+  {
+
+   
+       
+       Carta cartaJogada = jogadorVez.jogar();
+
+       writeln(cartaJogada);
+    
+   
+  }
+
+  public void main()
+  {
+    this.baralho.gerarCartas();
+    this.baralho.embaralharCartas();
+
+    this.gerarJogadores();
+    this.distribuirCartaJogadores();
+
+    this.sortearJogador();
+
+    this.comecarJogo();
+  }
+
+  // Get e Setters
+  public Baralho getBaralho()
+  {
+    return baralho;
+  }
+
+  public void setBaralho(Baralho novoBaralho)
+  {
+    baralho = novoBaralho;
+  }
+
+  public Jogador[] getJogadores()
+  {
+    return jogadores;
+  }
+
+  public void setJogadores(Jogador[] novosJogadores)
+  {
+    jogadores = novosJogadores;
+  }
+
+  public Stack!Carta getCartasUsadas()
+  {
+    return cartasUsadas;
+  }
+
+  public void setCartasUsadas(Stack!Carta novasCartasUsadas)
+  {
+    cartasUsadas = novasCartasUsadas;
+  }
+
+  public Jogador getJogadorVez()
+  {
+    return jogadorVez;
+  }
+
+  public void setJogadorVez(Jogador novoJogadorVez)
+  {
+    jogadorVez = novoJogadorVez;
+  }
+
+  public bool getJogoEncerrado()
+  {
+    return jogoEncerrado;
+  }
+
+  public void setJogoEncerrado(bool novoJogoEncerrado)
+  {
+    jogoEncerrado = novoJogoEncerrado;
+  }
+
+  public bool getSentidoInvertido()
+  {
+    return sentidoInvertido;
+  }
+
+  public void setSentidoInvertido(bool novoSentidoInvertido)
+  {
+    sentidoInvertido = novoSentidoInvertido;
+  }
+
 }
