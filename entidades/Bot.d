@@ -11,12 +11,12 @@ class Bot {
         this.nome = nome;
         this.maoCartas = [];
     }
-/*
+
     // Método para adicionar uma carta à mão do bot
     public void adicionarCarta(Carta carta) {
         maoCartas ~= carta;
     }
-*/
+
 
     // Método para jogar uma carta com a cor desejada
     public Carta checarCor(string corDesejada) {
