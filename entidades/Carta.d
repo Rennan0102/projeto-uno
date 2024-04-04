@@ -15,6 +15,11 @@ export abstract class Carta {
     public string getNome(){
         return nome;
     }
+
+    override string toString() const
+    {
+      return "Carta: ["~nome~"] \t";  
+    }
 }
 
 export class CartaComum : Carta {
@@ -40,6 +45,11 @@ export class CartaComum : Carta {
     // Getter
     public string getCor(){
         return cor;
+    }
+
+     override string toString() const
+    {
+      return (super.toString() ~ "Cor ["~cor~"]");  
     }
 }
 

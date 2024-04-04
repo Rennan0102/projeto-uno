@@ -3,8 +3,6 @@ module entidades.Uno;
 import std.stdio;
 import std.conv;
 import std.range;
-
-// Lembrar de não importar o Baralho aqui dentro do Uno, pois o Baralho é criado depois do Uno
 import entidades.Carta;
 import entidades.Jogador;
 import entidades.Baralho;
@@ -12,12 +10,16 @@ import entidades.Utils;
 import std.string;
 
 class Uno {
+  public static int MAXIMO_JOGADORES = 8;
+  public static int NUMERO_CARTAS_JOGADOR = 8;
   public static numeroCartaEspecial = 8;
   public static numeroCartaJoker = 4;
 
   private Baralho baralho;
   private Jogador[] jogadores;
   private Stack!Carta cartasUsadas;
+  private Jogador jogadorVez;
+  private bool jogoEncerrado;
   private string sentidoRotacao;
 
   this() {
@@ -25,6 +27,7 @@ class Uno {
     this.cartasUsadas = new Stack!Carta();
     this.jogadores = [];
     this.sentidoRotacao = "Direita";
+    this,jogoEncerrado = false;
   }
 
   public Carta[] getCartas(){
@@ -74,7 +77,7 @@ class Uno {
         writef("Digite o nome do jogador %d \n", count);
         readf("%s\n", &nomeJogador);
 
-        if (toLower(nomeJogador) == DataInput.stringSaida)  {
+        if (toLower(nomeJogador) == DataInput.stringSaida || count > MAXIMO_JOGADORES)  {
            break;
         }
 
@@ -84,16 +87,44 @@ class Uno {
 
   }
 
+  public void distribuirCartaJogadores() {
+
+     foreach (ref jogador; jogadores)
+     {
+        this.baralho.distribuirCartaJogador(jogador, NUMERO_CARTAS_JOGADOR);
+     }
+
+  }
+
   public void mostrarJogadores() {
       foreach (jogador; jogadores)
       {
           writeln(jogador);
+          jogador.mostrarMao();
       }
+
+      writeln(this.baralho.getCartasBaralho());
+  }
+
+  // Provavelmente isso não vai ficar aqui 
+  public void comecarJogo() {
+
+    while(!jogoEncerrado) {
+
+
+
+
+    }
+
   }
 
   public void main() {
      this.baralho.gerarCartas();
+     this.baralho.embaralharCartas();
+
      this.gerarJogadores();
-     this.mostrarJogadores();
+     this.distribuirCartaJogadores();
+
+     this.comecarJogo();
   }
 }

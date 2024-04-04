@@ -72,7 +72,7 @@ export class Baralho
         }
     }
 
-    public void distribuirCartas(Jogador jogador, int numeroCartas)
+    public void distribuirCartaJogador(Jogador jogador, int numeroCartas)
     { // Cartas sempre retiradas do final do ArrayList
         Carta[] cartasDoJogador = cartasBaralho.take(numeroCartas);
 

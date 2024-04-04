@@ -1,23 +1,25 @@
 module entidades.Jogador;
 
+import std.stdio;
 import entidades.Carta;
+import std.algorithm.iteration : map;
+import entidades.Utils;
 
 export class Jogador {
-    private Carta[] maoJogador;
+    private ArrayList!Carta mao;
     private string nome;
-    private bool uno;
 
     this(string nome) {
         this.nome = nome;
-        this.uno = false;
+        this.mao = new ArrayList!Carta();
     }
 
     public void adicionarCarta(Carta carta) {
-        maoJogador ~= carta;
+        mao.add(carta);
     }
 
-    public bool getIsUno(){
-        return maoJogador.length == 1;
+    public bool isUno(){
+        return mao.size() == 1;
     }
 
     // Getters & Setters
@@ -30,12 +32,19 @@ export class Jogador {
         nome = novoNome;
     }
 
-    public Carta[] getMaoJogador() {
-        return maoJogador;
+    public Carta[] getmao() {
+        return mao;
     }
 
      override string toString() const {
         return "Jogador ["~nome~"]";
+    }
+
+    public void mostrarMao() {
+        foreach (carta; mao)
+        {
+          writefln(carta.toString());  
+        }
     }
 
 }
