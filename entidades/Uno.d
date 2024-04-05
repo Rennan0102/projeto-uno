@@ -20,8 +20,8 @@ export class Uno
   public static numeroCartaJoker = 4;
 
   private Baralho baralho;
-  private Jogador[] jogadores;
-  private Stack!Carta cartasUsadas;
+  private ArrayList!(Jogador) jogadores;
+  private Stack!(Carta) cartasUsadas;
   private Jogador jogadorVez;
   private bool jogoEncerrado;
   private bool sentidoInvertido;
@@ -30,16 +30,11 @@ export class Uno
   public this(RegrasUno regrasUno)
   {
     this.baralho = new Baralho();
-    this.cartasUsadas = new Stack!Carta();
-    this.jogadores = [];
+    this.cartasUsadas = new Stack!(Carta)();
+    this.jogadores = new ArrayList!(Jogador)();
     this.sentidoInvertido = false;
     this.jogoEncerrado = false;
     this.regrasUno = regrasUno;
-  }
-
-  public Carta[] getCartas()
-  {
-    return this.baralho.getCartasBaralho();
   }
 
   public void telaInicial()
@@ -93,11 +88,11 @@ export class Uno
         break;
       }
 
-      jogadores ~= new JogadorReal(nomeJogador);
+      jogadores.add(new JogadorReal(nomeJogador));
       count++;
     }
 
-    ///jogadores ~= new Bot("Burrinho Artificial");
+    //jogadores.add(new Bot("Burrinho Artificial"));
   }
 
   public void distribuirCartaJogadores()
@@ -105,39 +100,32 @@ export class Uno
     writeln("Distribuindo Cartas...");
     Thread.sleep(dur!"seconds"(1));
 
-    foreach (ref jogador; jogadores)
+    foreach (ref jogador; jogadores.toArray())
     {
       this.baralho.distribuirCartaJogador(jogador, NUMERO_CARTAS_JOGADOR);
     }
 
   }
 
-  public void mostrarJogadores()
+  public void sortearVezJogador()
   {
-    foreach (jogador; jogadores)
-    {
-      writeln(jogador);
-      jogador.mostrarMaoCartas();
-    }
-
-    writeln(this.baralho.getCartasBaralho());
+    int index = uniform(0, jogadores.length());
+    this.jogadorVez = jogadores.get(index);
   }
 
-  public void sortearJogador()
+  public void adicionarPrimeiraCartaPilhaDescarte()
   {
-    size_t index = uniform(0, jogadores.length);
+    Carta carta = baralho.getCartasBaralho().pop();
 
-    this.jogadorVez = jogadores[index];
-    vezJogador(jogadorVez);
+    cartasUsadas.push(carta);
   }
 
   // Provavelmente isso não vai ficar aqui 
   public void comecarJogo()
   {
-    size_t index = uniform(0, baralho.getCartasBaralho.length);
-    Carta cartaJogada = baralho.getCartasBaralho()[index];
-    cartasUsadas.push(cartaJogada);
-    writeln(cartaJogada);
+
+      writeln("Carta do Topo da Pilha de Descarte: " ~ cartasUsadas.getLast().toString());
+      writeln("Vez do Jogador: " ~ jogadorVez.toString());
   }
 
   public void main()
@@ -148,28 +136,15 @@ export class Uno
     this.gerarJogadores();
     this.distribuirCartaJogadores();
 
+    this.sortearVezJogador();
+    this.adicionarPrimeiraCartaPilhaDescarte();
+
     this.comecarJogo();
-    
-    while (!jogoEncerrado){
-      this.sortearJogador();
-    }
-
-    // Vez começa no Fluxo Inicial, com as cartas sendo embaralhadas e distribuídas
-    // O baralho coloca uma carta na pilha de usados e começa o Fluxo Normal
-  }
-    // Fluxo Normal: Tem uma carta na pilha de usados, jogador vê a mão, escolhe Carta
-    // ou escolhe comprar, joga a carta e passa a vez
-
-  public void vezJogador(Jogador jogador){
-    writeln("Sua vez!");
-    Carta ultimoCartaJogada = this.cartasUsadas.getLast();
-    writeln("Ultima carta jogada: " ~ to!string(ultimoCartaJogada));
-    // Checar se o baralho está vazio, se sim, repor as cartas
-
-    cartasUsadas.push(jogador.jogar());
   }
 
+  // -----------------------------------------------------------------------------------------------------------
   // Get e Setters
+
   public Baralho getBaralho()
   {
     return baralho;
@@ -178,16 +153,6 @@ export class Uno
   public void setBaralho(Baralho novoBaralho)
   {
     baralho = novoBaralho;
-  }
-
-  public Jogador[] getJogadores()
-  {
-    return jogadores;
-  }
-
-  public void setJogadores(Jogador[] novosJogadores)
-  {
-    jogadores = novosJogadores;
   }
 
   public Stack!Carta getCartasUsadas()

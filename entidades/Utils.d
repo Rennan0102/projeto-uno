@@ -5,8 +5,9 @@ import std.algorithm;
 import std.array;
 import std.algorithm.iteration : map;
 import std.conv : to;
+import std.random;
 
-class ArrayList(T)
+export class ArrayList(T)
 {
     private T[] array;
     private int size;
@@ -24,7 +25,7 @@ class ArrayList(T)
 
     void add(int index, T element)
     {
-        if (index < 0 || index > array.length)
+        if (index < 0 || index > size)
         {
             throw new Exception("Index out of bounds");
         }
@@ -35,7 +36,7 @@ class ArrayList(T)
 
     T get(int index)
     {
-        if (index < 0 || index >= array.length)
+        if (index < 0 || index >= size)
         {
             throw new Exception("Index out of bounds");
         }
@@ -45,7 +46,7 @@ class ArrayList(T)
 
     void remove(int index)
     {
-        if (index < 0 || index >= array.length)
+        if (index < 0 || index >= size)
         {
             throw new Exception("Index out of bounds");
         }
@@ -56,6 +57,19 @@ class ArrayList(T)
     {
         array = array.filter!(x => x !is element).array;
         size--;
+    }
+
+    T pop() {
+        assert(size > 0, "Array vazio");
+
+        auto lastIndex = size - 1;
+        auto element = array[lastIndex];
+
+        array = array[0 .. lastIndex];
+
+        size--;
+
+        return element;
     }
 
     void clear()
@@ -79,15 +93,22 @@ class ArrayList(T)
         writeln(array);
     }
 
+    void shuffle() {
+        randomShuffle(array);
+    }
+
     public T[] toArray()
     {
         return array;
     }
+
+    alias array this;
 }
 
-class Stack(T)
+export class Stack(T)
 {
     private T[] data;
+    private int size;
 
     this()
     {
@@ -97,27 +118,37 @@ class Stack(T)
     void push(T value)
     {
         data ~= value;
+        size++;
     }
 
     T pop()
     {
         assert(!isEmpty(), "Stack is empty");
-        T value = data[$ - 1];
-        data = data[0 .. $ - 1];
+        T value = data[size - 1];
+        data = data[0 .. size - 1];
+        size--;
         return value;
     }
 
     T getLast(){
-        return data[$ - 1];
+        return data[size - 1];
+    }
+
+    int getSize() {
+        return size;
     }
 
     bool isEmpty()
     {
-        return data.length == 0;
+        return size == 0;
+    }
+
+    void shuffle() {
+        randomShuffle(data);
     }
 }
 
-class DataInput
+export class DataInput
 {
     public static string stringSaida = "-s";
 
