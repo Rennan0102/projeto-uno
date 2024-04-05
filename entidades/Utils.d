@@ -134,7 +134,7 @@ class DataInput
         }
 
         int selection;
-        
+        string input;
 
         while (true)
         {
@@ -142,7 +142,10 @@ class DataInput
             try
             {
                 writeln("Digite o numero: \n");
-                readf("%d", &selection); // Verificar esse readf
+                input = readln();
+                input = input.replace("\n", "");
+
+                selection = to!int(input);
 
                 if (selection >= 1 && selection <= sizeArray)
                 {
