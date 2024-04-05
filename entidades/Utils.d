@@ -107,6 +107,10 @@ class Stack(T)
         return value;
     }
 
+    T getLast(){
+        return data[$ - 1];
+    }
+
     bool isEmpty()
     {
         return data.length == 0;
@@ -138,7 +142,7 @@ class DataInput
             try
             {
                 writeln("Digite o numero: \n");
-                readf("%d", &selection);
+                readf("%d", &selection); // Verificar esse readf
 
                 if (selection >= 1 && selection <= sizeArray)
                 {

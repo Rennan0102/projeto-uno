@@ -11,7 +11,7 @@ export abstract class Carta {
     }
 
     public void mostrarCarta(){} // Método para printar a Carta
-// Lembrar de colocar um índice na mão do jogador para ele poder escolher a carta
+
     public string getNome(){
         return nome;
     }

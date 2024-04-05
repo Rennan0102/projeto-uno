@@ -73,7 +73,6 @@ export class JogadorReal : Jogador {
 
 }
 
-
 export class Bot : Jogador {
 
     public this(string nome) {

@@ -10,10 +10,11 @@ import entidades.RegrasUno;
 import entidades.Utils;
 import std.string;
 import std.random : uniform, uniform01;
+import core.thread;
 
 export class Uno
 {
-  public static int MAXIMO_JOGADORES = 8;
+  public static int MAXIMO_JOGADORES = 3;
   public static int NUMERO_CARTAS_JOGADOR = 8;
   public static numeroCartaEspecial = 8;
   public static numeroCartaJoker = 4;
@@ -101,6 +102,8 @@ export class Uno
 
   public void distribuirCartaJogadores()
   {
+    writeln("Distribuindo Cartas...");
+    Thread.sleep(dur!"seconds"(1));
 
     foreach (ref jogador; jogadores)
     {
@@ -125,19 +128,16 @@ export class Uno
     size_t index = uniform(0, jogadores.length);
 
     this.jogadorVez = jogadores[index];
+    vezJogador(jogadorVez);
   }
 
   // Provavelmente isso não vai ficar aqui 
   public void comecarJogo()
   {
-
-   
-       
-       Carta cartaJogada = jogadorVez.jogar();
-
-       writeln(cartaJogada);
-    
-   
+    size_t index = uniform(0, baralho.getCartasBaralho.length);
+    Carta cartaJogada = baralho.getCartasBaralho()[index];
+    cartasUsadas.push(cartaJogada);
+    writeln(cartaJogada);
   }
 
   public void main()
@@ -148,9 +148,25 @@ export class Uno
     this.gerarJogadores();
     this.distribuirCartaJogadores();
 
-    this.sortearJogador();
-
     this.comecarJogo();
+    
+    while (!jogoEncerrado){
+      this.sortearJogador();
+    }
+
+    // Vez começa no Fluxo Inicial, com as cartas sendo embaralhadas e distribuídas
+    // O baralho coloca uma carta na pilha de usados e começa o Fluxo Normal
+  }
+    // Fluxo Normal: Tem uma carta na pilha de usados, jogador vê a mão, escolhe Carta
+    // ou escolhe comprar, joga a carta e passa a vez
+
+  public void vezJogador(Jogador jogador){
+    writeln("Sua vez!");
+    Carta ultimoCartaJogada = this.cartasUsadas.getLast();
+    writeln("Ultima carta jogada: " ~ to!string(ultimoCartaJogada));
+    // Checar se o baralho está vazio, se sim, repor as cartas
+
+    cartasUsadas.push(jogador.jogar());
   }
 
   // Get e Setters

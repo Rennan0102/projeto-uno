@@ -26,7 +26,7 @@ export class RegrasUno
     }
 
     void jogarCarta(string nomeCarta)
-    {
+    { // dando erro se colocar algo diferente de string
         switch (nomeCarta)
         {
         case "Zero":
