@@ -11,6 +11,7 @@ import entidades.Utils;
 import std.string;
 import std.random : uniform, uniform01;
 import core.thread;
+import std.exception;
 
 export class Uno
 {
@@ -26,6 +27,7 @@ export class Uno
   private bool jogoEncerrado;
   private bool sentidoInvertido;
   private RegrasUno regrasUno;
+  private int totalJogadas;
 
   public this(RegrasUno regrasUno)
   {
@@ -35,6 +37,7 @@ export class Uno
     this.sentidoInvertido = false;
     this.jogoEncerrado = false;
     this.regrasUno = regrasUno;
+    this.totalJogadas = 0;
   }
 
   public void telaInicial()
@@ -110,6 +113,9 @@ export class Uno
   public void sortearVezJogador()
   {
     int index = uniform(0, jogadores.length());
+
+    totalJogadas = index;
+
     this.jogadorVez = jogadores.get(index);
   }
 
@@ -120,12 +126,60 @@ export class Uno
     cartasUsadas.push(carta);
   }
 
-  // Provavelmente isso não vai ficar aqui 
   public void comecarJogo()
   {
+    writeln("Carta do Topo da Pilha de Descarte: " ~ cartasUsadas.getLast().toString());
+    writeln();
 
-      writeln("Carta do Topo da Pilha de Descarte: " ~ cartasUsadas.getLast().toString());
+    while (!jogoEncerrado)
+    {
       writeln("Vez do Jogador: " ~ jogadorVez.toString());
+      writeln("\n");
+
+      Carta carta = jogadorVez.jogar();
+
+      try
+      {
+        regrasUno.jogarCarta(carta);
+      }
+      catch (JogadaInvalidaException error)
+      {
+        writefln("Error: " ~ error.msg);
+        continue;
+      }
+
+      jogadorVez.removerCarta(carta);
+      cartasUsadas.push(carta);
+
+      bool jogoFinalizado = regrasUno.verficiarSeJogoEstaFinalizado();
+
+      if (jogoFinalizado)
+      {
+        jogoEncerrado = true;
+        continue;
+      }
+
+      mudarVezJogador();
+      writeln();
+    }
+  }
+
+  // Corrigir depois
+  public void mudarVezJogador()
+  {
+    int indice;
+    totalJogadas++;
+
+    if (sentidoInvertido)
+    {
+      indice = (jogadores.length() - 1) - totalJogadas;
+    }
+    else
+    {
+      indice = totalJogadas % jogadores.length();
+    }
+
+    this.jogadorVez = jogadores.get(indice);
   }
 
   public void main()

@@ -2,6 +2,7 @@ module entidades.RegrasUno;
 
 import entidades.Uno;
 import std.stdio;
+import entidades.Carta;
 
 export class RegrasUno
 {
@@ -25,8 +26,12 @@ export class RegrasUno
         uno.setSentidoInvertido(!vez);
     }
 
-    void jogarCarta(string nomeCarta)
-    { // dando erro se colocar algo diferente de string
+    void jogarCarta(Carta carta)
+    { 
+        string nomeCarta = carta.getNome();     
+
+        writeln(nomeCarta);
+
         switch (nomeCarta)
         {
         case "Zero":
@@ -51,9 +56,19 @@ export class RegrasUno
             carta_JokerMais4();
             break;
         default:
-            writeln("Carta não reconhecida.");
+           carta_comum();
         }
     }
+
+        // Carta sem efeitos espeficiais
+        void carta_comum() {
+            writeln("Carta comum sem efeitos");
+        }
+
+        public bool verficiarSeJogoEstaFinalizado() {
+            // Todo Implementar
+            return false;
+        }
 
         // Métodos para cada carta
         void carta_Zero()

@@ -36,6 +36,10 @@ export abstract class Jogador {
         return maoCartas;
     }
 
+    public void removerCarta(Carta carta) {
+        return maoCartas.remove(carta);
+    }
+
     override string toString() const {
         return "Jogador ["~nome~"]";
     }

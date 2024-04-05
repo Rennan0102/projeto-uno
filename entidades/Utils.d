@@ -172,7 +172,7 @@ export class DataInput
 
             try
             {
-                writeln("Digite o numero: \n");
+                write("Digite o numero: ");
                 input = readln();
                 input = input.replace("\n", "");
 
@@ -194,6 +194,14 @@ export class DataInput
 
         }
 
+    }
+
+}
+
+export class JogadaInvalidaException : Exception {
+
+    this(string mensagem) {
+        super(mensagem);
     }
 
 }
