@@ -15,17 +15,16 @@ import std.exception;
 
 export class Uno
 {
-  public static int MAXIMO_JOGADORES = 3;
+  public static int MAXIMO_JOGADORES = 4;
   public static int NUMERO_CARTAS_JOGADOR = 8;
   public static numeroCartaEspecial = 8;
   public static numeroCartaJoker = 4;
 
   private Baralho baralho;
-  private ArrayList!(Jogador) jogadores;
+  private ListaJogadores jogadores;
   private Stack!(Carta) cartasUsadas;
-  private Jogador jogadorVez;
   private bool jogoEncerrado;
-  private bool sentidoInvertido;
+  private bool sentidoInvertidoRotacao;
   private RegrasUno regrasUno;
   private int totalJogadas;
 
@@ -33,8 +32,8 @@ export class Uno
   {
     this.baralho = new Baralho();
     this.cartasUsadas = new Stack!(Carta)();
-    this.jogadores = new ArrayList!(Jogador)();
-    this.sentidoInvertido = false;
+    this.jogadores = new ListaJogadores();
+    this.sentidoInvertidoRotacao = false;
     this.jogoEncerrado = false;
     this.regrasUno = regrasUno;
     this.totalJogadas = 0;
@@ -83,13 +82,13 @@ export class Uno
     while (true)
     {
 
-      writef("Digite o nome do jogador %d \n", count);
-      readf("%s\n", &nomeJogador);
-
       if (toLower(nomeJogador) == DataInput.stringSaida || count > MAXIMO_JOGADORES - 1)
       {
         break;
       }
+
+      writef("Digite o nome do jogador %d \n", count);
+      readf("%s\n", &nomeJogador);
 
       jogadores.add(new JogadorReal(nomeJogador));
       count++;
@@ -110,15 +109,6 @@ export class Uno
 
   }
 
-  public void sortearVezJogador()
-  {
-    int index = uniform(0, jogadores.length());
-
-    totalJogadas = index;
-
-    this.jogadorVez = jogadores.get(index);
-  }
-
   public void adicionarPrimeiraCartaPilhaDescarte()
   {
     Carta carta = baralho.getCartasBaralho().pop();
@@ -133,6 +123,7 @@ export class Uno
 
     while (!jogoEncerrado)
     {
+      Jogador jogadorVez = jogadores.getJogadorVez();
       writeln("Vez do Jogador: " ~ jogadorVez.toString());
       writeln("\n");
 
@@ -164,22 +155,25 @@ export class Uno
     }
   }
 
-  // Corrigir depois
   public void mudarVezJogador()
   {
-    int indice;
-    totalJogadas++;
 
-    if (sentidoInvertido)
+    writeln(sentidoInvertidoRotacao);
+
+    if (sentidoInvertidoRotacao)
     {
-      indice = (jogadores.length() - 1) - totalJogadas;
+      this.jogadores.setJogadorVezAnterior();
     }
     else
     {
-      indice = totalJogadas % jogadores.length();
+      this.jogadores.setJogadorVezProximo();
     }
 
-    this.jogadorVez = jogadores.get(indice);
+  }
+
+  public void inverterSentido()
+  {
+    this.sentidoInvertidoRotacao = !sentidoInvertidoRotacao;
   }
 
   public void main()
@@ -190,7 +184,7 @@ export class Uno
     this.gerarJogadores();
     this.distribuirCartaJogadores();
 
-    this.sortearVezJogador();
+    this.jogadores.sortearJogadorVez();
     this.adicionarPrimeiraCartaPilhaDescarte();
 
     this.comecarJogo();
@@ -219,16 +213,6 @@ export class Uno
     cartasUsadas = novasCartasUsadas;
   }
 
-  public Jogador getJogadorVez()
-  {
-    return jogadorVez;
-  }
-
-  public void setJogadorVez(Jogador novoJogadorVez)
-  {
-    jogadorVez = novoJogadorVez;
-  }
-
   public bool getJogoEncerrado()
   {
     return jogoEncerrado;
@@ -239,14 +223,14 @@ export class Uno
     jogoEncerrado = novoJogoEncerrado;
   }
 
-  public bool getSentidoInvertido()
+  public bool getsentidoInvertidoRotacao()
   {
-    return sentidoInvertido;
+    return sentidoInvertidoRotacao;
   }
 
-  public void setSentidoInvertido(bool novoSentidoInvertido)
+  public void setsentidoInvertidoRotacao(bool novosentidoInvertidoRotacao)
   {
-    sentidoInvertido = novoSentidoInvertido;
+    sentidoInvertidoRotacao = novosentidoInvertidoRotacao;
   }
 
 }

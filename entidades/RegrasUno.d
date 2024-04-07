@@ -19,16 +19,9 @@ export class RegrasUno
         this.uno = uno;
     }
 
-    public void carta_inverter()
-    {
-        bool vez = uno.getSentidoInvertido();
-
-        uno.setSentidoInvertido(!vez);
-    }
-
     void jogarCarta(Carta carta)
-    { 
-        string nomeCarta = carta.getNome();     
+    {
+        string nomeCarta = carta.getNome();
 
         writeln(nomeCarta);
 
@@ -56,54 +49,56 @@ export class RegrasUno
             carta_JokerMais4();
             break;
         default:
-           carta_comum();
+            carta_Comum();
         }
     }
 
-        // Carta sem efeitos espeficiais
-        void carta_comum() {
-            writeln("Carta comum sem efeitos");
-        }
-
-        public bool verficiarSeJogoEstaFinalizado() {
-            // Todo Implementar
-            return false;
-        }
-
-        // Métodos para cada carta
-        void carta_Zero()
-        {
-            writeln("Jogou a carta Zero.");
-        }
-
-        void carta_Um()
-        {
-            writeln("Jogou a carta Um.");
-        }
-
-        void carta_Bloqueio()
-        {
-            writeln("Jogou a carta Bloqueio.");
-        }
-
-        void carta_Inverter()
-        {
-            writeln("Jogou a carta Inverter.");
-        }
-
-        void carta_Mais2()
-        {
-            writeln("Jogou a carta Mais 2.");
-        }
-
-        void carta_Joker()
-        {
-            writeln("Jogou a carta Joker.");
-        }
-
-        void carta_JokerMais4()
-        {
-            writeln("Jogou a carta Joker +4.");
-        }
-
+    public void carta_Inverter()
+    {
+        this.uno.inverterSentido();
     }
+
+    // Carta sem efeitos espeficiais
+    public void carta_Comum()
+    {
+        writeln("Carta comum sem efeitos");
+    }
+
+    // Métodos para cada carta
+    void carta_Zero()
+    {
+        writeln("Jogou a carta Zero.");
+    }
+
+    void carta_Um()
+    {
+        writeln("Jogou a carta Um.");
+    }
+
+    void carta_Bloqueio()
+    {
+        writeln("Jogou a carta Bloqueio.");
+    }
+
+    void carta_Mais2()
+    {
+        writeln("Jogou a carta Mais 2.");
+    }
+
+    void carta_Joker()
+    {
+        writeln("Jogou a carta Joker.");
+    }
+
+    void carta_JokerMais4()
+    {
+        writeln("Jogou a carta Joker +4.");
+    }
+
+    public bool verficiarSeJogoEstaFinalizado()
+    {
+        // Todo Implementar
+        return false;
+    }
+
+}

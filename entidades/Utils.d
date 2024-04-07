@@ -6,6 +6,7 @@ import std.array;
 import std.algorithm.iteration : map;
 import std.conv : to;
 import std.random;
+import entidades.Jogador;
 
 export class ArrayList(T)
 {
@@ -59,7 +60,8 @@ export class ArrayList(T)
         size--;
     }
 
-    T pop() {
+    T pop()
+    {
         assert(size > 0, "Array vazio");
 
         auto lastIndex = size - 1;
@@ -93,7 +95,8 @@ export class ArrayList(T)
         writeln(array);
     }
 
-    void shuffle() {
+    void shuffle()
+    {
         randomShuffle(array);
     }
 
@@ -130,11 +133,13 @@ export class Stack(T)
         return value;
     }
 
-    T getLast(){
+    T getLast()
+    {
         return data[size - 1];
     }
 
-    int getSize() {
+    int getSize()
+    {
         return size;
     }
 
@@ -143,7 +148,8 @@ export class Stack(T)
         return size == 0;
     }
 
-    void shuffle() {
+    void shuffle()
+    {
         randomShuffle(data);
     }
 }
@@ -198,10 +204,134 @@ export class DataInput
 
 }
 
-export class JogadaInvalidaException : Exception {
+export class JogadaInvalidaException : Exception
+{
 
-    this(string mensagem) {
+    this(string mensagem)
+    {
         super(mensagem);
+    }
+
+}
+
+class Node(T)
+{
+    T data;
+    Node!T proximo;
+    Node!T anterior;
+
+    this(T data)
+    {
+        this.data = data;
+        this.proximo = null;
+        this.anterior = null;
+    }
+}
+
+class ListaJogadores
+{
+public:
+    Node!Jogador inicio;
+    Node!Jogador fim;
+    Node!Jogador vez;
+    int tamanho;
+
+public:
+    this()
+    {
+        this.inicio = null;
+        this.fim = null;
+        this.vez = null;
+        this.tamanho = 0;
+    }
+
+    void add(Jogador jogador)
+    {
+        Node!Jogador novoNo = new Node!Jogador(jogador);
+
+        if (this.inicio is null)
+        {
+            this.inicio = novoNo;
+            this.fim = novoNo;
+            this.vez = novoNo;
+        }
+        else
+        {
+            this.fim.proximo = novoNo;
+            novoNo.anterior = this.fim;
+            this.fim = novoNo;
+        }
+
+        this.fim.proximo = this.inicio;
+        this.inicio.anterior = this.fim;
+
+        this.tamanho++;
+    }
+
+public:
+    int length()
+    {
+        return this.tamanho;
+    }
+
+    Jogador[] toArray()
+    {
+        Jogador[] array = new Jogador[](this.tamanho);
+
+        Node!Jogador atual = this.inicio;
+
+        for (int i = 0; i < this.tamanho; i++)
+        {
+            array[i] = atual.data;
+            atual = atual.proximo;
+        }
+
+        return array;
+    }
+
+public:
+    Jogador setJogadorVezProximo()
+    {
+        this.vez = vez.proximo;
+
+        return vez.data;
+    }
+
+    Jogador setJogadorVezAnterior()
+    {
+        this.vez = vez.anterior;
+
+        return vez.data;
+    }
+
+    private Node!Jogador getJogadorNode(int posicao)
+    {
+
+        if (posicao < 0 || posicao >= this.tamanho)
+        {
+            throw new Exception("Posição inválida");
+        }
+
+        Node!Jogador atual = this.inicio;
+
+        for (int i = 0; i < posicao; i++)
+        {
+            atual = atual.proximo;
+        }
+
+        return atual;
+    }
+
+    Jogador getJogadorVez()
+    {
+        return vez.data;
+    }
+
+    void sortearJogadorVez()
+    {
+        int index = uniform(0, tamanho);
+
+        this.vez = getJogadorNode(index);
     }
 
 }
