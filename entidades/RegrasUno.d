@@ -4,7 +4,7 @@ import entidades.Uno;
 import std.stdio;
 import entidades.Carta;
 import entidades.Utils;
-
+import entidades.Baralho;
 
 export class RegrasUno
 {
@@ -21,37 +21,57 @@ export class RegrasUno
         this.uno = uno;
     }
 
-    void jogarCarta(Carta carta, ListaJogadores jogadores)
+    public void testarCartaValida(Carta carta)
+    {
+        Carta cartaTopoPilha = uno.getCartasUsadas().getLast();
+
+        string nomeCartaTopoPilha = cartaTopoPilha.getNome();
+        string corCartaTopoPilha = cartaTopoPilha.getCor();
+
+        string nomeCarta = carta.getNome();
+        string corCarta = carta.getCor();
+
+        if ((nomeCartaTopoPilha == "Joker" || corCartaTopoPilha == "JokerMais4") && corCarta != corCartaTopoPilha)
+        {
+            throw new JogadaInvalidaException("A cor tem que ser igual a selecionada pelo o player");
+        }
+
+        if (
+            nomeCarta != "Joker" &&
+            nomeCarta != "JokerMais4" &&
+            nomeCarta != nomeCartaTopoPilha &&
+            corCarta != corCartaTopoPilha
+            )
+        {
+            throw new JogadaInvalidaException("Jogada Inválida");
+        }
+    }
+
+    void jogarCarta(Carta carta)
     {
         string nomeCarta = carta.getNome();
 
-        writeln(nomeCarta);
+        this.testarCartaValida(carta);
 
         switch (nomeCarta)
         {
-        case "Zero":
-            carta_Zero();
-            break;
-        case "Um":
-            carta_Um();
-            break;
         case "Bloqueio":
-            carta_Bloqueio(jogadores);
+            carta_Bloqueio();
             break;
         case "Inverter":
             carta_Inverter();
             break;
         case "Mais2":
-            carta_Mais2(jogadores);
+            carta_Mais2(carta);
             break;
         case "Joker":
             carta_Joker(carta);
             break;
         case "JokerMais4":
-            carta_JokerMais4(carta, jogadores);
+            carta_JokerMais4(carta);
             break;
         default:
-            carta_Comum();
+            break;
         }
     }
 
@@ -60,57 +80,51 @@ export class RegrasUno
         this.uno.inverterSentido();
     }
 
-    // Carta sem efeitos espeficiais
-    public void carta_Comum()
-    {
-        writeln("Carta comum sem efeitos");
-    }
-
-    // Métodos para cada carta
-    void carta_Zero()
-    {
-        writeln("Jogou a carta Zero.");
-    }
-
-    void carta_Um()
-    {
-        writeln("Jogou a carta Um.");
-    }
-
-    void carta_Bloqueio(ListaJogadores jogadores)
+    void carta_Bloqueio()
     {
         writeln("Jogou a carta Bloqueio.");
-        jogadores.setJogadorVezProximo();
+        uno.pularVezJogador();
     }
 
-    void carta_Mais2(ListaJogadores jogadores)
+    void carta_Mais2(Carta carta)
     {
-        writeln("Jogou a carta Mais 2.");
+        ListaJogadores jogadores = uno.getJogadores();
+
         uno.getBaralho().distribuirCartaJogador(jogadores.getJogadorVezProximo(), 2);
+        uno.pularVezJogador();
     }
 
     void carta_Joker(Carta carta)
     {
         writeln("Jogou a carta Joker.");
-        string[] arrayCores = ["Vermelho", "Azul", "Verde", "Amarelo"];
-        string corDaCarta = DataInput.SelecionarCor(arrayCores, 4, "Digite um numero: ");
+
+        string corDaCarta = DataInput.SelecionarElemento(
+            Baralho.CARTAS_CORES,
+            4,
+            "Escolha uma Cor"
+        );
+
         carta.setCor(corDaCarta);
     }
 
-    void carta_JokerMais4(Carta carta, ListaJogadores jogadores)
+    void carta_JokerMais4(Carta carta)
     {
         writeln("Jogou a carta Joker +4.");
-        string[] arrayCores = ["Vermelho", "Azul", "Verde", "Amarelo"];
-        string corDaCarta = DataInput.SelecionarCor(arrayCores, 4, "Digite um numero: ");
+
+        ListaJogadores jogadores = uno.getJogadores();
+
+        string corDaCarta = DataInput.SelecionarElemento(Baralho.CARTAS_CORES, 4, "Digite um numero: ");
+
         carta.setCor(corDaCarta);
+
         uno.getBaralho().distribuirCartaJogador(jogadores.getJogadorVezProximo(), 4);
-        
+        uno.pularVezJogador();
     }
 
+    // Não sei se é só isso
     public bool verficiarSeJogoEstaFinalizado()
     {
-        // Todo Implementar
-        return false;
+        return uno.getJogadorVez().getMaoCartas().length() == 0;
     }
 
 }

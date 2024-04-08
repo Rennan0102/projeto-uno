@@ -32,7 +32,7 @@ export class ArrayList(T)
             throw new Exception("Index out of bounds");
         }
 
-        array = array[0 .. index] ~ [element] ~ array[index .. $];
+        array = array[0 .. index] ~ [element] ~ array[index .. size];
         size++;
     }
 
@@ -52,7 +52,8 @@ export class ArrayList(T)
         {
             throw new Exception("Index out of bounds");
         }
-        array = array[0 .. index] ~ array[index + 1 .. $];
+        array = array[0 .. index] ~ array[index + 1 .. size];
+        size--;
     }
 
     void remove(T element)
@@ -159,51 +160,6 @@ export class DataInput
 {
     public static string stringSaida = "-s";
 
-    public static string SelecionarCor(string[] elements, int sizeArray, string label)
-    {
-
-        writeln(label);
-
-        int i = 0;
-
-        foreach (element; elements.map!(to!string))
-        {
-            writeln(++i, ": ", element);
-        }
-
-        int selection;
-        string input;
-
-        while (true)
-        {
-
-            try
-            {
-                write("Digite o numero: ");
-                input = readln();
-                input = input.replace("\n", "");
-
-                selection = to!int(input);
-
-                if (selection >= 1 && selection <= sizeArray)
-                {
-                    return elements[selection - 1];
-                }
-                else
-                {
-                    writeln("Índice inválido. Tente novamente.");
-                }
-            }
-            catch (Exception e)
-            {
-                writeln("Entrada inválida. Tente novamente.");
-            }
-
-        }
-
-    }
-
-
     public static T SelecionarElemento(T)(T[] elements, int sizeArray, string label)
     {
 
@@ -229,11 +185,6 @@ export class DataInput
                 input = input.replace("\n", "");
 
                 selection = to!int(input);
-
-                if (selection == 0){
-                    T coisa = new T();
-                    return coisa;
-                }
 
                 if (selection >= 1 && selection <= sizeArray)
                 {

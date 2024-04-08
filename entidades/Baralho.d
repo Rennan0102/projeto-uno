@@ -10,34 +10,29 @@ import entidades.Utils;
 
 export class Baralho
 {
-    private string[] cartasNumeracao;
-    private string[] cartaEspecial;
-    private string[] corCarta;
-    private string[] cartaSentido;
-    private string[] jokers;
+    public static string[] CARTAS_NUMERACAO = [
+        "Zero", "Um", "Dois", "Tres", "Quatro", "Cinco", "Seis", "Sete",
+        "Oito",
+        "Nove"
+    ];
+    public static string[] CARTAS_ESPECIAIS = [
+        "Bloqueio", "Inverter", "Mais2"
+    ];
+    public static string[] CARTAS_CORES = ["Vermelho", "Azul", "Verde", "Amarelo"];
+    public static string[] CARTAS_JOKERS = ["Joker", "JokerMais4"];
     private ArrayList!(Carta) cartasBaralho;
 
     this()
     {
-        this.cartasNumeracao = [
-            "Zero", "Um", "Dois", "Tres", "Quatro", "Cinco", "Seis", "Sete",
-            "Oito",
-            "Nove"
-        ];
-        this.cartaEspecial = [
-            "Bloqueio", "Inverter", "Mais2"
-        ];
-        this.jokers = ["Joker", "JokerMais4"];
-        this.corCarta = ["Vermelho", "Azul", "Verde", "Amarelo"];
         this.cartasBaralho = new ArrayList!(Carta)();
     }
 
     public void gerarCartas()
     {
         // Cartas numeradas de 0 a 9 para cada cor
-        foreach (cor; corCarta)
+        foreach (cor; CARTAS_CORES)
         {
-            foreach (numero; cartasNumeracao)
+            foreach (numero; CARTAS_NUMERACAO)
             {
                 if (numero == "Zero")
                 {
@@ -52,9 +47,9 @@ export class Baralho
         }
 
         // Cartas especiais
-        foreach (cor; corCarta)
+        foreach (cor; CARTAS_CORES)
         {
-            foreach (especial; cartaEspecial)
+            foreach (especial; CARTAS_ESPECIAIS)
             {
                 cartasBaralho.add(new Carta(especial, cor));
                 cartasBaralho.add(new Carta(especial, cor));
@@ -62,7 +57,7 @@ export class Baralho
         }
 
         // Cartas coringas
-        foreach (joker; this.jokers)
+        foreach (joker; this.CARTAS_JOKERS)
         {
             foreach (_; 0 .. 4)
             {
@@ -71,24 +66,26 @@ export class Baralho
         }
     }
 
-    public void embaralharCartas() {
+    public void embaralharCartas()
+    {
         cartasBaralho.shuffle();
     }
 
-    public ArrayList!(Carta) getCartasBaralho() {
+    public ArrayList!(Carta) getCartasBaralho()
+    {
         return cartasBaralho;
     }
 
     public void distribuirCartaJogador(Jogador jogador, int numeroCartas)
-    { 
+    {
 
-        for (int x = 0; x < numeroCartas; x++) {
+        for (int x = 0; x < numeroCartas; x++)
+        {
             jogador.adicionarCarta(
-               cartasBaralho.pop()      
+                cartasBaralho.pop()
             );
         }
-    
+
     }
 
-  
 }

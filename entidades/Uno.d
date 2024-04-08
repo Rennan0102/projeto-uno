@@ -15,8 +15,8 @@ import std.exception;
 
 export class Uno
 {
-  public static int MAXIMO_JOGADORES = 4;
-  public static int NUMERO_CARTAS_JOGADOR = 8;
+  public static int MAXIMO_JOGADORES = 3;
+  public static int NUMERO_CARTAS_JOGADOR = 4;
   public static numeroCartaEspecial = 8;
   public static numeroCartaJoker = 4;
 
@@ -118,55 +118,67 @@ export class Uno
 
   public void comecarJogo()
   {
-    int chances = 0;
+
     while (!jogoEncerrado)
     {
+
+      Jogador jogadorVez = jogadores.getJogadorVez();
+      int totalCartasJogador = jogadorVez.getMaoCartas().length();
+      bool possuiCartaValida = false;
+
       writeln("Carta do Topo da Pilha de Descarte: " ~ cartasUsadas.getLast().toString());
       writeln();
 
-      Jogador jogadorVez = jogadores.getJogadorVez();
       writeln("Vez do Jogador: " ~ jogadorVez.toString());
       writeln("\n");
 
-      writefln("0: Comprar uma carta");
+      for (int x = 0; x < totalCartasJogador; x++)
+      {
+        Carta cartaAtual = jogadorVez.getMaoCartas().get(x);
+
+        try
+        {
+          regrasUno.testarCartaValida(cartaAtual);
+          possuiCartaValida = true;
+          break;
+        }
+        catch (JogadaInvalidaException error)
+        {
+        }
+      }
+
+      if (!possuiCartaValida)
+      {
+        Carta cartaComprada = baralho.getCartasBaralho().pop();
+
+        jogadorVez.adicionarCarta(cartaComprada);
+
+        try
+        {
+          regrasUno.jogarCarta(cartaComprada);
+        }
+        catch (JogadaInvalidaException)
+        {
+          writeln("Não possui carta valida, mesmo comprando, indo pro proximo....");
+          this.mudarVezJogador();
+          continue;
+        }
+      }
 
       Carta carta = jogadorVez.jogar();
 
       try
       {
-        regrasUno.jogarCarta(carta, jogadores);
+        regrasUno.jogarCarta(carta);
       }
       catch (JogadaInvalidaException error)
       {
         writefln("Error: " ~ error.msg);
         continue;
       }
-      // checar se carta eh valida na jogada
 
-      if (carta.getNome() == null){
-        if (chances == 1){
-          chances = 0;
-          writefln("Não pode comprar mais de uma carta por rodada!");
-          mudarVezJogador();
-        } else{
-          baralho.distribuirCartaJogador(jogadorVez, 1);
-          chances++;
-          continue;
-        }
-      }
-
-      if(cartasUsadas.getLast().getCor() == carta.getCor() || cartasUsadas.getLast().getNome() == carta.getNome() || carta.getNome() == "Joker" ||  carta.getNome() == "JokerMais4"){
-        // remover cartas da mao
-        jogadorVez.removerCarta(carta);
-        cartasUsadas.push(carta); 
-      } else {
-        writefln("Carta Inválida. Próximo jogador!");
-        if (chances == 1){
-          chances = 0;
-          mudarVezJogador();
-        }
-        continue;
-      }
+      jogadorVez.removerCarta(carta);
+      cartasUsadas.push(carta);
 
       bool jogoFinalizado = regrasUno.verficiarSeJogoEstaFinalizado();
 
@@ -181,10 +193,20 @@ export class Uno
     }
   }
 
-  public void mudarVezJogador()
+  public void pularVezJogador()
   {
 
-    //writeln(sentidoInvertidoRotacao);
+    // mudar depois
+    if (jogadores.length() != 2)
+    {
+      this.mudarVezJogador();
+    }
+
+    this.mudarVezJogador();
+  }
+
+  public void mudarVezJogador()
+  {
 
     if (sentidoInvertidoRotacao)
     {
@@ -219,6 +241,11 @@ export class Uno
   // -----------------------------------------------------------------------------------------------------------
   // Get e Setters
 
+  public Jogador getJogadorVez()
+  {
+    return this.jogadores.getJogadorVez();
+  }
+
   public Baralho getBaralho()
   {
     return baralho;
@@ -227,6 +254,11 @@ export class Uno
   public void setBaralho(Baralho novoBaralho)
   {
     baralho = novoBaralho;
+  }
+
+  public ListaJogadores getJogadores()
+  {
+    return this.jogadores;
   }
 
   public Stack!Carta getCartasUsadas()
