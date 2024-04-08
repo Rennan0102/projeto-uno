@@ -41,12 +41,12 @@ export class Baralho
             {
                 if (numero == "Zero")
                 {
-                    cartasBaralho.add(new CartaComum(numero, cor));
+                    cartasBaralho.add(new Carta(numero, cor));
                 }
                 else
                 {
-                    cartasBaralho.add(new CartaComum(numero, cor));
-                    cartasBaralho.add(new CartaComum(numero, cor));
+                    cartasBaralho.add(new Carta(numero, cor));
+                    cartasBaralho.add(new Carta(numero, cor));
                 }
             }
         }
@@ -56,8 +56,8 @@ export class Baralho
         {
             foreach (especial; cartaEspecial)
             {
-                cartasBaralho.add(new CartaComum(especial, cor));
-                cartasBaralho.add(new CartaComum(especial, cor));
+                cartasBaralho.add(new Carta(especial, cor));
+                cartasBaralho.add(new Carta(especial, cor));
             }
         }
 
@@ -66,7 +66,7 @@ export class Baralho
         {
             foreach (_; 0 .. 4)
             {
-                cartasBaralho.add(new CartaJoker(joker));
+                cartasBaralho.add(new Carta(joker, null));
             }
         }
     }

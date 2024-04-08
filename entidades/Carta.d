@@ -3,24 +3,37 @@ module entidades.Carta;
 import std.stdio;
 import entidades.Jogador;
 
-export abstract class Carta {
-    private string nome;
+export class Carta {
+    private string nome, cor;
 
-    public this(string nome){
+    public this(){}    
+
+    public this(string nome, string cor){
         this.nome = nome;
+        this.cor = cor;
     }
-
-    public void mostrarCarta(){} // Método para printar a Carta
 
     public string getNome(){
         return nome;
     }
 
-    override string toString() const
-    {
-      return "Carta: ["~nome~"] \t";  
+    public string getCor() const{
+        return cor;
+    }
+
+    public void setCor(string novaCor) {
+        cor = novaCor;
+    }
+
+    override string toString() const{
+        if (this.getCor != null){
+            return "Cor ["~cor~"] \t" ~ "Carta: ["~nome~"] \t";
+        }
+
+        return "Carta: ["~nome~"] \t";  
     }
 }
+/** 
 
 export class CartaComum : Carta {
     private string cor;
@@ -28,18 +41,6 @@ export class CartaComum : Carta {
     public this(string nome, string cor){
         super(nome);
         this.cor = cor;
-    }
-
-    public override void mostrarCarta(){
-        writeln(" ___________ ");
-        writeln("|           |");
-        writeln("|           |");
-        writeln("| ", cor, "");
-        writeln("|           |");
-        writeln("|           |");
-        writeln("| ", nome, "");
-        writeln("|           |");
-        writeln("|___________|");
     }
 
     // Getter
@@ -54,19 +55,20 @@ export class CartaComum : Carta {
 }
 
 export class CartaJoker : Carta {
+    private string possivelCor;
+
     public this(string nome) {
         super(nome);
+        possivelCor = null;
     }
 
-    public override void mostrarCarta(){
-        writeln(" ___________ ");
-        writeln("|           |");
-        writeln("|           |");
-        writeln("|           |");
-        writeln("| ", nome, "");
-        writeln("|           |");
-        writeln("|           |");
-        writeln("|           |");
-        writeln("|___________|");
+    // Getter and Setter
+    public string getPossivelCor() {
+        return possivelCor;
     }
-}
+
+    public void setPossivelCor(string novaCor) {
+        possivelCor = novaCor;
+    }
+
+}*/

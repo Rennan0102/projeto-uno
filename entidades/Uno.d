@@ -118,29 +118,55 @@ export class Uno
 
   public void comecarJogo()
   {
-    writeln("Carta do Topo da Pilha de Descarte: " ~ cartasUsadas.getLast().toString());
-    writeln();
-
+    int chances = 0;
     while (!jogoEncerrado)
     {
+      writeln("Carta do Topo da Pilha de Descarte: " ~ cartasUsadas.getLast().toString());
+      writeln();
+
       Jogador jogadorVez = jogadores.getJogadorVez();
       writeln("Vez do Jogador: " ~ jogadorVez.toString());
       writeln("\n");
+
+      writefln("0: Comprar uma carta");
 
       Carta carta = jogadorVez.jogar();
 
       try
       {
-        regrasUno.jogarCarta(carta);
+        regrasUno.jogarCarta(carta, jogadores);
       }
       catch (JogadaInvalidaException error)
       {
         writefln("Error: " ~ error.msg);
         continue;
       }
+      // checar se carta eh valida na jogada
 
-      jogadorVez.removerCarta(carta);
-      cartasUsadas.push(carta);
+      if (carta.getNome() == null){
+        if (chances == 1){
+          chances = 0;
+          writefln("Não pode comprar mais de uma carta por rodada!");
+          mudarVezJogador();
+        } else{
+          baralho.distribuirCartaJogador(jogadorVez, 1);
+          chances++;
+          continue;
+        }
+      }
+
+      if(cartasUsadas.getLast().getCor() == carta.getCor() || cartasUsadas.getLast().getNome() == carta.getNome() || carta.getNome() == "Joker" ||  carta.getNome() == "JokerMais4"){
+        // remover cartas da mao
+        jogadorVez.removerCarta(carta);
+        cartasUsadas.push(carta); 
+      } else {
+        writefln("Carta Inválida. Próximo jogador!");
+        if (chances == 1){
+          chances = 0;
+          mudarVezJogador();
+        }
+        continue;
+      }
 
       bool jogoFinalizado = regrasUno.verficiarSeJogoEstaFinalizado();
 
@@ -158,7 +184,7 @@ export class Uno
   public void mudarVezJogador()
   {
 
-    writeln(sentidoInvertidoRotacao);
+    //writeln(sentidoInvertidoRotacao);
 
     if (sentidoInvertidoRotacao)
     {

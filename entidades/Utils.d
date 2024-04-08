@@ -7,6 +7,7 @@ import std.algorithm.iteration : map;
 import std.conv : to;
 import std.random;
 import entidades.Jogador;
+import entidades.Carta;
 
 export class ArrayList(T)
 {
@@ -158,7 +159,7 @@ export class DataInput
 {
     public static string stringSaida = "-s";
 
-    public static T SelecionarElemento(T)(T[] elements, int sizeArray, string label)
+    public static string SelecionarCor(string[] elements, int sizeArray, string label)
     {
 
         writeln(label);
@@ -202,8 +203,56 @@ export class DataInput
 
     }
 
-}
 
+    public static T SelecionarElemento(T)(T[] elements, int sizeArray, string label)
+    {
+
+        writeln(label);
+
+        int i = 0;
+
+        foreach (element; elements.map!(to!string))
+        {
+            writeln(++i, ": ", element);
+        }
+
+        int selection;
+        string input;
+
+        while (true)
+        {
+
+            try
+            {
+                write("Digite o numero: ");
+                input = readln();
+                input = input.replace("\n", "");
+
+                selection = to!int(input);
+
+                if (selection == 0){
+                    T coisa = new T();
+                    return coisa;
+                }
+
+                if (selection >= 1 && selection <= sizeArray)
+                {
+                    return elements[selection - 1];
+                }
+                else
+                {
+                    writeln("Índice inválido. Tente novamente.");
+                }
+            }
+            catch (Exception e)
+            {
+                writeln("Entrada inválida. Tente novamente.");
+            }
+
+        }
+
+    }
+}
 export class JogadaInvalidaException : Exception
 {
 
@@ -302,6 +351,10 @@ public:
         this.vez = vez.anterior;
 
         return vez.data;
+    }
+
+    Jogador getJogadorVezProximo(){ // Foi nóis :D
+        return vez.proximo.data;
     }
 
     private Node!Jogador getJogadorNode(int posicao)
