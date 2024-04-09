@@ -201,7 +201,7 @@ export class Uno
       jogadorVez.removerCarta(carta);
       cartasUsadas.push(carta);
 
-      bool jogoFinalizado = regrasUno.verficiarSeJogoEstaFinalizado();
+      bool jogoFinalizado = regrasUno.verficiarSeJogoEstaFinalizado(jogadorVez);
 
       if (jogoFinalizado)
       {
@@ -209,17 +209,7 @@ export class Uno
         continue;
       }
 
-      string nomeCarta = carta.getNome();
-
-      if (nomeCarta == "Bloqueio" || nomeCarta == "Mais2" || nomeCarta == "JokerMais4")
-      {
-        jogadores.pularVezJogador();
-      }
-      else
-      {
-        jogadores.mudarVezJogador();
-      }
-
+  
     }
   }
 

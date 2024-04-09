@@ -5,6 +5,7 @@ import std.stdio;
 import entidades.Carta;
 import entidades.Utils;
 import entidades.Baralho;
+import entidades.Jogador;
 
 export class RegrasUno
 {
@@ -63,17 +64,22 @@ export class RegrasUno
             break;
         case "Inverter":
             carta_Inverter();
+            jogadores.mudarVezJogador();
             break;
         case "Mais2":
             carta_Mais2();
+            jogadores.pularVezJogador();
             break;
         case "Joker":
             carta_Joker(carta);
+            jogadores.mudarVezJogador();
             break;
         case "JokerMais4":
             carta_JokerMais4(carta);
+            jogadores.pularVezJogador();
             break;
         default:
+            jogadores.mudarVezJogador();
             break;
         }
     }
@@ -86,6 +92,7 @@ export class RegrasUno
     void carta_Bloqueio()
     {
         writeln("Jogou a carta Bloqueio.");
+        jogadores.pularVezJogador();
     }
 
     void carta_Mais2()
@@ -118,9 +125,9 @@ export class RegrasUno
     }
 
     // Não sei se é só isso
-    public bool verficiarSeJogoEstaFinalizado()
+    public bool verficiarSeJogoEstaFinalizado(Jogador jogadorVezAnterior)
     {
-        return jogadores.getJogadorVez().getMaoCartas().length() == 0;
+        return jogadorVezAnterior.getMaoCartas().length() == 0;
     }
 
 }
