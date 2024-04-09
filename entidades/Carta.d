@@ -2,35 +2,46 @@ module entidades.Carta;
 
 import std.stdio;
 import entidades.Jogador;
+import std.format;
 
-export class Carta {
+
+export class Carta
+{
     private string nome, cor;
 
-    public this(){}    
+    public this()
+    {
+    }
 
-    public this(string nome, string cor){
+    public this(string nome, string cor)
+    {
         this.nome = nome;
         this.cor = cor;
     }
 
-    public string getNome(){
+    public string getNome()
+    {
         return nome;
     }
 
-    public string getCor() const{
+    public string getCor() const
+    {
         return cor;
     }
 
-    public void setCor(string novaCor) {
+    public void setCor(string novaCor)
+    {
         cor = novaCor;
     }
 
-    override string toString() const{
-        if (this.getCor != null){
-            return "Cor ["~cor~"] \t" ~ "Carta: ["~nome~"] \t";
+    override string toString() const
+    {
+        if (this.cor != null)
+        {
+            return  format("%-15s Cor ["~cor~"]", "Carta: [" ~ nome ~ "]");
         }
 
-        return "Carta: ["~nome~"] \t";  
+        return "Carta: [" ~ nome ~ "]";
     }
 }
 /** 

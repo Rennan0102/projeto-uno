@@ -8,8 +8,9 @@ import std.conv : to;
 import std.random;
 import entidades.Jogador;
 import entidades.Carta;
+import core.stdc.stdlib;
 
-export class ArrayList(T)
+class ArrayList(T)
 {
     private T[] array;
     private int size;
@@ -110,7 +111,7 @@ export class ArrayList(T)
     alias array this;
 }
 
-export class Stack(T)
+class Stack(T)
 {
     private T[] data;
     private int size;
@@ -156,7 +157,7 @@ export class Stack(T)
     }
 }
 
-export class DataInput
+class DataInput
 {
     public static string stringSaida = "-s";
 
@@ -204,7 +205,7 @@ export class DataInput
 
     }
 }
-export class JogadaInvalidaException : Exception
+class JogadaInvalidaException : Exception
 {
 
     this(string mensagem)
@@ -308,7 +309,7 @@ public:
         return vez.proximo.data;
     }
 
-    private Node!Jogador getJogadorNode(int posicao)
+    public Node!Jogador getJogadorNode(int posicao)
     {
 
         if (posicao < 0 || posicao >= this.tamanho)
@@ -337,5 +338,16 @@ public:
 
         this.vez = getJogadorNode(index);
     }
+
+}
+
+
+class Decoracao {
+
+    public static:
+        void limparTela() {
+            system("cls");
+        }
+
 
 }

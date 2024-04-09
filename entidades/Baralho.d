@@ -20,6 +20,8 @@ export class Baralho
     ];
     public static string[] CARTAS_CORES = ["Vermelho", "Azul", "Verde", "Amarelo"];
     public static string[] CARTAS_JOKERS = ["Joker", "JokerMais4"];
+    public static int NUMEROS_CARTAS_JOKER = 4;
+
     private ArrayList!(Carta) cartasBaralho;
 
     this()
@@ -59,7 +61,7 @@ export class Baralho
         // Cartas coringas
         foreach (joker; this.CARTAS_JOKERS)
         {
-            foreach (_; 0 .. 4)
+            foreach (_; 0 .. NUMEROS_CARTAS_JOKER)
             {
                 cartasBaralho.add(new Carta(joker, null));
             }
