@@ -72,7 +72,8 @@ export class Uno
       writeln("hhhhhhhhhhhhhhhdddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
     }
   }
-
+/*
+  // modificar
   public void gerarJogadores()
   {
 
@@ -95,7 +96,23 @@ export class Uno
     }
 
     //jogadores.add(new Bot("Burrinho Artificial"));
-  }
+  }*/
+
+ public void gerarJogadores()
+{
+    string nomeJogador;
+
+    // Adiciona jogador real
+    writef("Digite o nome do jogador 1\n");
+    readf("%s\n", &nomeJogador);
+    jogadores.add(new JogadorReal(nomeJogador));
+
+    // Adiciona bots
+    jogadores.add(new Bot("Bot 1"));
+    jogadores.add(new Bot("Bot 2"));
+}
+
+
 
   public void distribuirCartaJogadores()
   {
@@ -130,7 +147,7 @@ export class Uno
 
       writefln("0: Comprar uma carta");
 
-      Carta carta = jogadorVez.jogar();
+      Carta carta = jogadorVez.jogar(cartasUsadas.getLast(), baralho);
 
       try
       {

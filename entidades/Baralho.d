@@ -90,5 +90,14 @@ export class Baralho
     
     }
 
+    public Carta getCarta() 
+
+    {
+        Carta carta =  cartasBaralho.get(0);
+        cartasBaralho.remove(carta);
+        return carta;
+
+    }
+
   
 }

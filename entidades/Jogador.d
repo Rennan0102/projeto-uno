@@ -4,6 +4,8 @@ import std.stdio;
 import entidades.Carta;
 import std.algorithm.iteration : map;
 import entidades.Utils;
+import entidades.Baralho;
+
 
 export abstract class Jogador {
     protected ArrayList!Carta maoCartas;
@@ -53,7 +55,9 @@ export abstract class Jogador {
         }
     }
 
-    public abstract Carta jogar();
+    
+
+    public abstract Carta jogar(Carta carta, Baralho baralho);
 }
 
 export class JogadorReal : Jogador {
@@ -62,7 +66,7 @@ export class JogadorReal : Jogador {
         super(nome);
     }
 
-    override Carta jogar() {
+    override Carta jogar(Carta carta, Baralho baralho) {
         Carta[] cartaArray = this.maoCartas.toArray();
         int size = this.maoCartas.length();
 
@@ -83,34 +87,45 @@ export class Bot : Jogador {
         super(nome);
     }
 
-    /**
-    public Carta checarNome(string nomeDesejado) {
-        foreach (Carta carta; maoCartas.toArray()) {
-            if (carta.getNome() == nomeDesejado) {
-                maoCartas.remove(carta);
-                return carta;
-            }
-        }
-
-        return null; // Retorna null se não encontrar uma carta com o nome desejado
-    }
-
-    // Método para jogar uma carta especial (coringa)
-    public Carta checarEspecial() {
-        foreach (Carta carta; maoCartas.toArray()) {
-            if (carta is CartaJoker) {
-                maoCartas.remove(carta);
-                return carta;
-            }
-        }
-       
-       return null; // Retorna null se não encontrar uma carta especial
-    }
-    */
     
-    override Carta jogar() {
-        // ToDo iplementar
-        return null;
+    override Carta jogar(Carta cartaTopoDescarte, Baralho baralho) {
+
+        Carta[] cartaArray = this.maoCartas.toArray();
+        int size = this.maoCartas.length();
+        
+        writefln("Escolhendo uma carta ...");
+
+       foreach (Carta cartaMao; cartaArray)
+       {
+        if(cartaMao.getCor() == cartaTopoDescarte.getCor() || cartaMao.getNome() == cartaTopoDescarte.getNome())
+        { 
+            return cartaMao;
+        }
+
+         if(cartaMao.getNome() == "Joker" ||  cartaMao.getNome() == "JokerMais4")
+        { 
+            cartaMao.setCor(cartaTopoDescarte.getCor());
+            return cartaMao;
+        }
+       }
+       
+       // pega carta baralho
+       Carta cartaBaralho = baralho.getCarta();
+       if(cartaBaralho.getCor() == cartaTopoDescarte.getCor() || cartaBaralho.getNome() == cartaTopoDescarte.getNome())
+        { 
+            return cartaBaralho;
+        }
+
+         if(cartaBaralho.getNome() == "Joker" ||  cartaBaralho.getNome() == "JokerMais4")
+        { 
+            cartaBaralho.setCor(cartaTopoDescarte.getCor());
+            return cartaBaralho;
+        }
+
+       Carta cartaNull = new Carta();
+       
+
+       return cartaNull ;
     }
 
 }
