@@ -77,7 +77,6 @@ export class Uno
 
     Thread.sleep(dur!"seconds"(tempo));
 
-    Decoracao.limparTela();
   }
 
   public void gerarJogadores()
@@ -115,7 +114,6 @@ export class Uno
       this.baralho.distribuirCartaJogador(jogador, NUMERO_CARTAS_JOGADOR);
     }
 
-    Decoracao.limparTela();
   }
 
   public void adicionarPrimeiraCartaPilhaDescarte()
@@ -132,7 +130,7 @@ export class Uno
     Jogador jogadorVez;
     bool possuiCartaValida, jogadaValida;
     int totalCartasJogador;
-    
+
     while (!jogoEncerrado)
     {
 
@@ -166,18 +164,20 @@ export class Uno
       {
         Carta cartaComprada = baralho.getCartasBaralho().pop();
 
-        jogadorVez.adicionarCarta(cartaComprada);
-
         try
         {
           regrasUno.jogarCarta(cartaComprada);
+          cartasUsadas.push(cartaComprada);
         }
         catch (JogadaInvalidaException)
         {
           writeln("Não possui carta valida, mesmo comprando, indo pro proximo....");
-          this.mudarVezJogador();
-          continue;
+
+          jogadorVez.adicionarCarta(cartaComprada);
+          jogadores.mudarVezJogador();
         }
+
+        continue;
       }
 
       while (!jogadaValida)
@@ -209,34 +209,18 @@ export class Uno
         continue;
       }
 
-      mudarVezJogador();
-      Decoracao.limparTela();
+      string nomeCarta = carta.getNome();
+
+      if (nomeCarta == "Bloqueio" || nomeCarta == "Mais2" || nomeCarta == "JokerMais4")
+      {
+        jogadores.pularVezJogador();
+      }
+      else
+      {
+        jogadores.mudarVezJogador();
+      }
+
     }
-  }
-
-  public void pularVezJogador()
-  {
-    this.mudarVezJogador();
-    this.mudarVezJogador();
-  }
-
-  public void mudarVezJogador()
-  {
-
-    if (sentidoInvertidoRotacao)
-    {
-      this.jogadores.setJogadorVezAnterior();
-    }
-    else
-    {
-      this.jogadores.setJogadorVezProximo();
-    }
-
-  }
-
-  public void inverterSentido()
-  {
-    this.sentidoInvertidoRotacao = !sentidoInvertidoRotacao;
   }
 
   public void main()

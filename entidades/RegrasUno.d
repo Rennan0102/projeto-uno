@@ -10,15 +10,18 @@ export class RegrasUno
 {
 
     private Uno uno;
+    private ListaJogadores jogadores;
 
     public this()
     {
         this.uno = null;
+        this.jogadores = null;
     }
 
     public void setUno(Uno uno)
     {
         this.uno = uno;
+        this.jogadores = uno.getJogadores();
     }
 
     public void testarCartaValida(Carta carta)
@@ -62,7 +65,7 @@ export class RegrasUno
             carta_Inverter();
             break;
         case "Mais2":
-            carta_Mais2(carta);
+            carta_Mais2();
             break;
         case "Joker":
             carta_Joker(carta);
@@ -77,28 +80,24 @@ export class RegrasUno
 
     public void carta_Inverter()
     {
-        this.uno.inverterSentido();
+        jogadores.trocarSentidoRotacao();
     }
 
     void carta_Bloqueio()
     {
         writeln("Jogou a carta Bloqueio.");
-        uno.pularVezJogador();
     }
 
-    void carta_Mais2(Carta carta)
+    void carta_Mais2()
     {
-        ListaJogadores jogadores = uno.getJogadores();
-
         uno.getBaralho().distribuirCartaJogador(jogadores.getJogadorVezProximo(), 2);
-        uno.pularVezJogador();
     }
 
     void carta_Joker(Carta carta)
     {
         writeln("Jogou a carta Joker.");
 
-        string corDaCarta = DataInput.SelecionarElemento(
+        string corDaCarta = DataInput.selecionarElementoPeloUsuario(
             Baralho.CARTAS_CORES,
             4,
             "Escolha uma Cor"
@@ -111,20 +110,17 @@ export class RegrasUno
     {
         writeln("Jogou a carta Joker +4.");
 
-        ListaJogadores jogadores = uno.getJogadores();
-
-        string corDaCarta = DataInput.SelecionarElemento(Baralho.CARTAS_CORES, 4, "Digite um numero: ");
+        string corDaCarta = DataInput.selecionarElementoPeloUsuario(Baralho.CARTAS_CORES, 4, "Digite um numero: ");
 
         carta.setCor(corDaCarta);
 
         uno.getBaralho().distribuirCartaJogador(jogadores.getJogadorVezProximo(), 4);
-        uno.pularVezJogador();
     }
 
     // Não sei se é só isso
     public bool verficiarSeJogoEstaFinalizado()
     {
-        return uno.getJogadorVez().getMaoCartas().length() == 0;
+        return jogadores.getJogadorVez().getMaoCartas().length() == 0;
     }
 
 }

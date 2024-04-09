@@ -66,7 +66,7 @@ export class JogadorReal : Jogador {
         Carta[] cartaArray = this.maoCartas.toArray();
         int size = this.maoCartas.length();
 
-        Carta cartaJogada = DataInput.SelecionarElemento(
+        Carta cartaJogada = DataInput.selecionarElementoPeloUsuario(
             cartaArray,
             size,
            "Escolha uma Carta"  

@@ -161,7 +161,7 @@ class DataInput
 {
     public static string stringSaida = "-s";
 
-    public static T SelecionarElemento(T)(T[] elements, int sizeArray, string label)
+    public static T selecionarElementoPeloUsuario(T)(T[] elements, int sizeArray, string label)
     {
 
         writeln(label);
@@ -205,6 +205,7 @@ class DataInput
 
     }
 }
+
 class JogadaInvalidaException : Exception
 {
 
@@ -236,6 +237,7 @@ public:
     Node!Jogador fim;
     Node!Jogador vez;
     int tamanho;
+    bool sentidoInvertido;
 
 public:
     this()
@@ -243,6 +245,7 @@ public:
         this.inicio = null;
         this.fim = null;
         this.vez = null;
+        this.sentidoInvertido = false;
         this.tamanho = 0;
     }
 
@@ -305,8 +308,37 @@ public:
         return vez.data;
     }
 
-    Jogador getJogadorVezProximo(){ // Foi nóis :D
+    Jogador getJogadorVezProximo()
+    {
+        if (sentidoInvertido)
+        {
+            return vez.anterior.data;
+        }
+
         return vez.proximo.data;
+    }
+
+    void mudarVezJogador()
+    {
+        if (sentidoInvertido)
+        {
+            this.vez = vez.anterior;
+        }
+        else
+        {
+            this.vez = vez.proximo;
+        }
+    }
+
+    void pularVezJogador()
+    {
+        this.mudarVezJogador();
+        this.mudarVezJogador();
+    }
+
+    void trocarSentidoRotacao()
+    {
+        this.sentidoInvertido = !this.sentidoInvertido;
     }
 
     public Node!Jogador getJogadorNode(int posicao)
@@ -341,13 +373,13 @@ public:
 
 }
 
+class Decoracao
+{
 
-class Decoracao {
-
-    public static:
-        void limparTela() {
-            system("cls");
-        }
-
+public static:
+    void limparTela()
+    {
+        system("cls");
+    }
 
 }
