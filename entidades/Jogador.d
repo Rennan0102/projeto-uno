@@ -5,89 +5,122 @@ import entidades.Carta;
 import std.algorithm.iteration : map;
 import entidades.Utils;
 import entidades.Baralho;
+import entidades.Uno;
 
-
-export abstract class Jogador {
+export abstract class Jogador
+{
     protected ArrayList!Carta maoCartas;
     protected string nome;
 
-    this(string nome) {
+    this(string nome)
+    {
         this.nome = nome;
         this.maoCartas = new ArrayList!(Carta)();
     }
 
-    public void adicionarCarta(Carta carta) {
+    public void adicionarCarta(Carta carta)
+    {
         maoCartas.add(carta);
     }
 
-    public bool isUno(){
+    public bool isUno()
+    {
         return maoCartas.length() == 1;
     }
 
     // Getters & Setters
 
-    public string getNome() {
+    public string getNome()
+    {
         return nome;
     }
 
-    public void setNome(string novoNome) {
+    public void setNome(string novoNome)
+    {
         nome = novoNome;
     }
 
-    public ArrayList!Carta getMaoCartas() {
+    public ArrayList!Carta getMaoCartas()
+    {
         return maoCartas;
     }
 
-    public void removerCarta(Carta carta) {
+    public void removerCarta(Carta carta)
+    {
         return maoCartas.remove(carta);
     }
 
-    override string toString() const {
-        return "Jogador ["~nome~"]";
+    override string toString() const
+    {
+        return "Jogador [" ~ nome ~ "]";
     }
 
-    public void mostrarMaoCartas() {
-        const(Carta)[] toArray = maoCartas.toArray();    
+    public void mostrarMaoCartas()
+    {
+        const(Carta)[] toArray = maoCartas.toArray();
 
-        foreach (carta; toArray)
+        foreach (i, carta; toArray)
         {
-          writefln(carta.toString());  
+            writeln(++i, ". ",  carta.toString());
         }
     }
 
-    
-
-    public abstract Carta jogar(Carta carta, Baralho baralho);
+    public abstract Carta jogar(Carta carta, Uno uno);
 }
 
-export class JogadorReal : Jogador {
+export class JogadorReal : Jogador
+{
 
-    public this(string nome) {
+    public this(string nome)
+    {
         super(nome);
     }
 
-    override Carta jogar(Carta carta, Baralho baralho) {
+    override Carta jogar(Carta cartaTopoLista, Uno uno)
+    {
         Carta[] cartaArray = this.maoCartas.toArray();
         int size = this.maoCartas.length();
 
-        Carta cartaJogada = DataInput.SelecionarElemento(
-            cartaArray,
-            size,
-           "Escolha uma Carta"  
-        );  
+        Carta cartaJogada = null;
 
-        return cartaJogada;
+        while (true)
+        {
+
+            cartaJogada = DataInput.selecionarElementoPeloUsuario(
+                cartaArray,
+                size,
+                "Escolha uma Carta"
+            );
+
+            try
+            {
+                uno.testarCartaValida(cartaJogada);
+                return cartaJogada;
+            }
+            catch (JogadaInvalidaException error)
+            {
+                writefln("Error: " ~ error.msg);
+                continue;
+            }
+        }
     }
 
 }
 
-export class Bot : Jogador {
+export class Bot : Jogador
+{
 
-    public this(string nome) {
+    public this(string nome)
+    {
         super(nome);
     }
 
-    
+    override Carta jogar(Carta cartaTopoDescarte, Uno uno)
+    {
+        return null;
+    }
+
+    /*
     override Carta jogar(Carta cartaTopoDescarte, Baralho baralho) {
 
         Carta[] cartaArray = this.maoCartas.toArray();
@@ -127,5 +160,5 @@ export class Bot : Jogador {
 
        return cartaNull ;
     }
-
+    */
 }

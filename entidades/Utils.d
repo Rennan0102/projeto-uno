@@ -8,8 +8,9 @@ import std.conv : to;
 import std.random;
 import entidades.Jogador;
 import entidades.Carta;
+import core.stdc.stdlib;
 
-export class ArrayList(T)
+class ArrayList(T)
 {
     private T[] array;
     private int size;
@@ -32,7 +33,7 @@ export class ArrayList(T)
             throw new Exception("Index out of bounds");
         }
 
-        array = array[0 .. index] ~ [element] ~ array[index .. $];
+        array = array[0 .. index] ~ [element] ~ array[index .. size];
         size++;
     }
 
@@ -46,13 +47,16 @@ export class ArrayList(T)
         return array[index];
     }
 
-    void remove(int index)
+    T remove(int index)
     {
         if (index < 0 || index >= size)
         {
             throw new Exception("Index out of bounds");
         }
-        array = array[0 .. index] ~ array[index + 1 .. $];
+        T element = array[index];
+        array = array[0 .. index] ~ array[index + 1 .. size];
+        size--;
+        return element;
     }
 
     void remove(T element)
@@ -75,15 +79,15 @@ export class ArrayList(T)
         return element;
     }
 
+    int length()
+    {
+        return size;
+    }
+
     void clear()
     {
         array = [];
         size = 0;
-    }
-
-    int length()
-    {
-        return size;
     }
 
     bool isEmpty()
@@ -109,7 +113,7 @@ export class ArrayList(T)
     alias array this;
 }
 
-export class Stack(T)
+class Stack(T)
 {
     private T[] data;
     private int size;
@@ -155,11 +159,11 @@ export class Stack(T)
     }
 }
 
-export class DataInput
+class DataInput
 {
     public static string stringSaida = "-s";
 
-    public static string SelecionarCor(string[] elements, int sizeArray, string label)
+    public static T selecionarElementoPeloUsuario(T)(T[] elements, int sizeArray, string label)
     {
 
         writeln(label);
@@ -184,56 +188,6 @@ export class DataInput
                 input = input.replace("\n", "");
 
                 selection = to!int(input);
-
-                if (selection >= 1 && selection <= sizeArray)
-                {
-                    return elements[selection - 1];
-                }
-                else
-                {
-                    writeln("Índice inválido. Tente novamente.");
-                }
-            }
-            catch (Exception e)
-            {
-                writeln("Entrada inválida. Tente novamente.");
-            }
-
-        }
-
-    }
-
-
-    public static T SelecionarElemento(T)(T[] elements, int sizeArray, string label)
-    {
-
-        writeln(label);
-
-        int i = 0;
-
-        foreach (element; elements.map!(to!string))
-        {
-            writeln(++i, ": ", element);
-        }
-
-        int selection;
-        string input;
-
-        while (true)
-        {
-
-            try
-            {
-                write("Digite o numero: ");
-                input = readln();
-                input = input.replace("\n", "");
-
-                selection = to!int(input);
-
-                if (selection == 0){
-                    T coisa = new T();
-                    return coisa;
-                }
 
                 if (selection >= 1 && selection <= sizeArray)
                 {
@@ -253,7 +207,8 @@ export class DataInput
 
     }
 }
-export class JogadaInvalidaException : Exception
+
+class JogadaInvalidaException : Exception
 {
 
     this(string mensagem)
@@ -284,6 +239,7 @@ public:
     Node!Jogador fim;
     Node!Jogador vez;
     int tamanho;
+    bool sentidoInvertido;
 
 public:
     this()
@@ -291,6 +247,7 @@ public:
         this.inicio = null;
         this.fim = null;
         this.vez = null;
+        this.sentidoInvertido = false;
         this.tamanho = 0;
     }
 
@@ -353,11 +310,40 @@ public:
         return vez.data;
     }
 
-    Jogador getJogadorVezProximo(){ // Foi nóis :D
+    Jogador getJogadorVezProximo()
+    {
+        if (sentidoInvertido)
+        {
+            return vez.anterior.data;
+        }
+
         return vez.proximo.data;
     }
 
-    private Node!Jogador getJogadorNode(int posicao)
+    void mudarVezJogador()
+    {
+        if (sentidoInvertido)
+        {
+            this.vez = vez.anterior;
+        }
+        else
+        {
+            this.vez = vez.proximo;
+        }
+    }
+
+    void pularVezJogador()
+    {
+        this.mudarVezJogador();
+        this.mudarVezJogador();
+    }
+
+    void trocarSentidoRotacao()
+    {
+        this.sentidoInvertido = !this.sentidoInvertido;
+    }
+
+    public Node!Jogador getJogadorNode(int posicao)
     {
 
         if (posicao < 0 || posicao >= this.tamanho)
@@ -385,6 +371,17 @@ public:
         int index = uniform(0, tamanho);
 
         this.vez = getJogadorNode(index);
+    }
+
+}
+
+class Decoracao
+{
+
+public static:
+    void limparTela()
+    {
+        system("cls");
     }
 
 }

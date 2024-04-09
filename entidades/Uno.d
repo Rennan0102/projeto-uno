@@ -15,10 +15,8 @@ import std.exception;
 
 export class Uno
 {
-  public static int MAXIMO_JOGADORES = 4;
-  public static int NUMERO_CARTAS_JOGADOR = 8;
-  public static numeroCartaEspecial = 8;
-  public static numeroCartaJoker = 4;
+  public static int MAXIMO_JOGADORES = 3;
+  public static int NUMERO_CARTAS_JOGADOR = 4;
 
   private Baralho baralho;
   private ListaJogadores jogadores;
@@ -27,6 +25,7 @@ export class Uno
   private bool sentidoInvertidoRotacao;
   private RegrasUno regrasUno;
   private int totalJogadas;
+  private Jogador vencedor;
 
   public this(RegrasUno regrasUno)
   {
@@ -41,39 +40,46 @@ export class Uno
 
   public void telaInicial()
   {
-    {
 
-      writeln("\n--------------------------------------------------------------------------------");
-      writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-      writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhyso+++osyhdhhhhhhhhh");
-      writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhyo:.......```-/shhhhhhhh");
-      writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhy+..````.....````.:shhhhhh");
-      writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhy:````-/osysso+:.```.+hhhhh");
-      writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhyso/-.shhhhh:````/yddmddhhys+-..../hhhh");
-      writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhys:....-yhhds-```-ydhhhhddmhyho-....shhh");
-      writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhyyhhhhhhhdhs+-````/hddo.  `-hhhhhhhhhmmdh/----:hhh");
-      writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhys+:-.-+shhhhdmys+.````+dds- ``.shhhhhhhhhmmd/::::-hhh");
-      writeln("hhhhhhhhhhhhhhhhhhhyso/:shs/-``````-+shhdmhy/.  `.hhy/```.-yhhhhhhhhdmh-::::/hhh");
-      writeln("hhhhhhhhhhhhhhhhhhy/-...-hso:`````````-+sdmhh/````-hs+:.----oyhhhhhhhy::::::yhhh");
-      writeln("hhhhhhhhyyhhhhhhhdso:````:hs+:````-.`   `-oyhy:..../so+/::::-:/oooo/::::::/shhhh");
-      writeln("hhhhys+:--yhhhhhhmhs+-````oys+-`  `:/:.````.-+/:----os+++/::::::::::::::/oyhhhhh");
-      writeln("hhhhs:```./hhhhhhdmys/.```.yys/.```.+so+/-------::::-yhssso++///:::::/+shhhhhhhh");
-      writeln("hhdhy+-```.+hhhhhhdmys:````-hyy/....-yyysso/::::::::::dddhyyyyyssssyhdddhhhhhhhh");
-      writeln("hhdmhy/-```-shhhhhhddys:``..:dys:----:dddhhyyo+/::::::/hddddddmdmmmmddhhhhhhhhhh");
-      writeln("hhhdmys:.```-yhhhhhhmdhs:..-.odho::::-+hdmmdddhyo+/////shhhhdddddhhhhhhhhhhhhhhh");
-      writeln("hhhhddyo:.```:hhhhhhdmdd+:-:-.mhh+::::-ohhddmmdddhysyyhhhhhhhhhhhhhhhhhhhhhhhhhh");
-      writeln("hhhhhmhy+:....+hhhhhhdmd+::::.hmdh/::::-yhhhhddmmdddddhhhhhhhhhhhhhhhhhhhhhhhhhh");
-      writeln("hhhhhdmhy+:---.+yhhhhhds-:::::hdmdh/:/++ohhhhhhhddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-      writeln("hhhhhhdms++:-----/+o+/:-:::::shhmddyyhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-      writeln("hhhhhhhddoo+/::::----:::::/+yhhhdmdmmddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-      writeln("hhhhhhhhddysso//:::::://+shhhhhhhddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-      writeln("hhhhhhhhhdmdddhhyyyyyhhdmdhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-      writeln("hhhhhhhhhhhdhhhhhhhhhhddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-      writeln("hhhhhhhhhhhhhhhdddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-    }
+    int tempo = 3;
+
+    writeln("\n--------------------------------------------------------------------------------");
+    writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhyso+++osyhdhhhhhhhhh");
+    writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhyo:.......```-/shhhhhhhh");
+    writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhy+..````.....````.:shhhhhh");
+    writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhy:````-/osysso+:.```.+hhhhh");
+    writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhyso/-.shhhhh:````/yddmddhhys+-..../hhhh");
+    writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhys:....-yhhds-```-ydhhhhddmhyho-....shhh");
+    writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhyyhhhhhhhdhs+-````/hddo.  `-hhhhhhhhhmmdh/----:hhh");
+    writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhys+:-.-+shhhhdmys+.````+dds- ``.shhhhhhhhhmmd/::::-hhh");
+    writeln("hhhhhhhhhhhhhhhhhhhyso/:shs/-``````-+shhdmhy/.  `.hhy/```.-yhhhhhhhhdmh-::::/hhh");
+    writeln("hhhhhhhhhhhhhhhhhhy/-...-hso:`````````-+sdmhh/````-hs+:.----oyhhhhhhhy::::::yhhh");
+    writeln("hhhhhhhhyyhhhhhhhdso:````:hs+:````-.`   `-oyhy:..../so+/::::-:/oooo/::::::/shhhh");
+    writeln("hhhhys+:--yhhhhhhmhs+-````oys+-`  `:/:.````.-+/:----os+++/::::::::::::::/oyhhhhh");
+    writeln("hhhhs:```./hhhhhhdmys/.```.yys/.```.+so+/-------::::-yhssso++///:::::/+shhhhhhhh");
+    writeln("hhdhy+-```.+hhhhhhdmys:````-hyy/....-yyysso/::::::::::dddhyyyyyssssyhdddhhhhhhhh");
+    writeln("hhdmhy/-```-shhhhhhddys:``..:dys:----:dddhhyyo+/::::::/hddddddmdmmmmddhhhhhhhhhh");
+    writeln("hhhdmys:.```-yhhhhhhmdhs:..-.odho::::-+hdmmdddhyo+/////shhhhdddddhhhhhhhhhhhhhhh");
+    writeln("hhhhddyo:.```:hhhhhhdmdd+:-:-.mhh+::::-ohhddmmdddhysyyhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    writeln("hhhhhmhy+:....+hhhhhhdmd+::::.hmdh/::::-yhhhhddmmdddddhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    writeln("hhhhhdmhy+:---.+yhhhhhds-:::::hdmdh/:/++ohhhhhhhddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    writeln("hhhhhhdms++:-----/+o+/:-:::::shhmddyyhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    writeln("hhhhhhhddoo+/::::----:::::/+yhhhdmdmmddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    writeln("hhhhhhhhddysso//:::::://+shhhhhhhddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    writeln("hhhhhhhhhdmdddhhyyyyyhhdmdhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    writeln("hhhhhhhhhhhdhhhhhhhhhhddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    writeln("hhhhhhhhhhhhhhhdddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+
+    writeln();
+    writeln();
+
+    writeln("O jogo irá começar em", tempo, "segundos...");
+
+    Thread.sleep(dur!"seconds"(tempo));
+
   }
-/*
-  // modificar
+
   public void gerarJogadores()
   {
 
@@ -96,26 +102,11 @@ export class Uno
     }
 
     //jogadores.add(new Bot("Burrinho Artificial"));
-  }*/
-
- public void gerarJogadores()
-{
-    string nomeJogador;
-
-    // Adiciona jogador real
-    writef("Digite o nome do jogador 1\n");
-    readf("%s\n", &nomeJogador);
-    jogadores.add(new JogadorReal(nomeJogador));
-
-    // Adiciona bots
-    jogadores.add(new Bot("Bot 1"));
-    jogadores.add(new Bot("Bot 2"));
-}
-
-
+  }
 
   public void distribuirCartaJogadores()
   {
+    writeln();
     writeln("Distribuindo Cartas...");
     Thread.sleep(dur!"seconds"(1));
 
@@ -135,92 +126,117 @@ export class Uno
 
   public void comecarJogo()
   {
-    int chances = 0;
+
+    Carta carta;
+    Jogador jogadorVez;
+    bool possuiCartaValida;
+    int totalCartasJogador;
+    Carta cartaTopoPilha;
+
     while (!jogoEncerrado)
     {
-      writeln("Carta do Topo da Pilha de Descarte: " ~ cartasUsadas.getLast().toString());
+
+      jogadorVez = jogadores.getJogadorVez();
+      totalCartasJogador = jogadorVez.getMaoCartas().length();
+      cartaTopoPilha = cartasUsadas.getLast();
+      possuiCartaValida = false;
+
+      writeln("Carta do Topo da Pilha de Descarte: " ~ cartaTopoPilha.toString());
       writeln();
 
-      Jogador jogadorVez = jogadores.getJogadorVez();
       writeln("Vez do Jogador: " ~ jogadorVez.toString());
       writeln("\n");
 
-      writefln("0: Comprar uma carta");
-
-      Carta carta = jogadorVez.jogar(cartasUsadas.getLast(), baralho);
-
-      try
+      for (int x = 0; x < totalCartasJogador; x++)
       {
-        regrasUno.jogarCarta(carta, jogadores);
-      }
-      catch (JogadaInvalidaException error)
-      {
-        writefln("Error: " ~ error.msg);
-        continue;
-      }
-      // checar se carta eh valida na jogada
+        Carta cartaAtual = jogadorVez.getMaoCartas().get(x);
 
-      if (carta.getNome() == null){
-        if (chances == 1){
-          chances = 0;
-          writefln("Não pode comprar mais de uma carta por rodada!");
-          mudarVezJogador();
-        } else{
-          baralho.distribuirCartaJogador(jogadorVez, 1);
-          chances++;
-          continue;
+        try
+        {
+          this.testarCartaValida(cartaAtual);
+          possuiCartaValida = true;
+          break;
+        }
+        catch (JogadaInvalidaException error)
+        {
         }
       }
 
-      if(cartasUsadas.getLast().getCor() == carta.getCor() || cartasUsadas.getLast().getNome() == carta.getNome() || carta.getNome() == "Joker" ||  carta.getNome() == "JokerMais4"){
-        // remover cartas da mao
-        jogadorVez.removerCarta(carta);
-        cartasUsadas.push(carta); 
-      } else {
-        writefln("Carta Inválida. Próximo jogador!");
-        if (chances == 1){
-          chances = 0;
-          mudarVezJogador();
+      if (!possuiCartaValida)
+      {
+        Carta cartaComprada = baralho.getCartasBaralho().pop();
+
+        try
+        {
+          regrasUno.jogarCarta(cartaComprada);
+          cartasUsadas.push(cartaComprada);
         }
+        catch (JogadaInvalidaException)
+        {
+          writeln("Não possui carta valida, mesmo comprando, indo pro proximo....");
+
+          jogadorVez.adicionarCarta(cartaComprada);
+          jogadorVez.mostrarMaoCartas();
+
+          jogadores.mudarVezJogador();
+          writeln();
+        }
+
         continue;
       }
 
-      bool jogoFinalizado = regrasUno.verficiarSeJogoEstaFinalizado();
+      carta = jogadorVez.jogar(cartaTopoPilha, this);
+
+      regrasUno.jogarCarta(carta);
+      jogadorVez.removerCarta(carta);
+      cartasUsadas.push(carta);
+
+      bool jogoFinalizado = regrasUno.verficiarSeJogoEstaFinalizado(jogadorVez);
 
       if (jogoFinalizado)
       {
+        vencedor = jogadorVez;
         jogoEncerrado = true;
         continue;
       }
 
-      mudarVezJogador();
-      writeln();
     }
   }
 
-  public void mudarVezJogador()
+  public void testarCartaValida(Carta carta)
   {
+    Carta cartaTopoPilha = this.getCartasUsadas().getLast();
 
-    //writeln(sentidoInvertidoRotacao);
+    string nomeCartaTopoPilha = cartaTopoPilha.getNome();
+    string corCartaTopoPilha = cartaTopoPilha.getCor();
 
-    if (sentidoInvertidoRotacao)
+    string nomeCarta = carta.getNome();
+    string corCarta = carta.getCor();
+
+    if ((nomeCartaTopoPilha == "Joker" || corCartaTopoPilha == "JokerMais4") && corCarta != corCartaTopoPilha)
     {
-      this.jogadores.setJogadorVezAnterior();
-    }
-    else
-    {
-      this.jogadores.setJogadorVezProximo();
+      throw new JogadaInvalidaException("A cor tem que ser igual a selecionada pelo o player");
     }
 
+    if (
+      nomeCarta != "Joker" &&
+      nomeCarta != "JokerMais4" &&
+      nomeCarta != nomeCartaTopoPilha &&
+      corCarta != corCartaTopoPilha
+      )
+    {
+      throw new JogadaInvalidaException("Jogada Inválida");
+    }
   }
 
-  public void inverterSentido()
-  {
-    this.sentidoInvertidoRotacao = !sentidoInvertidoRotacao;
+  public void mostrarVencedor() {
+     writeln(vencedor, "Venceu o jogo");
   }
 
   public void main()
   {
+    this.telaInicial();
+
     this.baralho.gerarCartas();
     this.baralho.embaralharCartas();
 
@@ -228,13 +244,19 @@ export class Uno
     this.distribuirCartaJogadores();
 
     this.jogadores.sortearJogadorVez();
-    this.adicionarPrimeiraCartaPilhaDescarte();
 
+    this.adicionarPrimeiraCartaPilhaDescarte();
     this.comecarJogo();
+    this.mostrarVencedor();
   }
 
   // -----------------------------------------------------------------------------------------------------------
   // Get e Setters
+
+  public Jogador getJogadorVez()
+  {
+    return this.jogadores.getJogadorVez();
+  }
 
   public Baralho getBaralho()
   {
@@ -244,6 +266,11 @@ export class Uno
   public void setBaralho(Baralho novoBaralho)
   {
     baralho = novoBaralho;
+  }
+
+  public ListaJogadores getJogadores()
+  {
+    return this.jogadores;
   }
 
   public Stack!Carta getCartasUsadas()
