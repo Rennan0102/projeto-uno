@@ -7,6 +7,12 @@ import entidades.Utils;
 import entidades.Baralho;
 import entidades.Jogador;
 
+import std.algorithm;
+import std.array;
+import std.range;
+import std.typecons;
+import std.conv;
+
 abstract class ExecutorCarta
 {
 
@@ -82,12 +88,56 @@ class ExecutorCartaBot : ExecutorCarta
 
     public override void carta_JokerMais4(Carta carta)
     {
-        // Implementação do bot para escolher uma cor pro joker
+        Jogador jogador = uno.getJogadorVez();
+        Carta[] cartas = jogador.getMaoCartas().toArray();
+
+        auto contagemCores = ["Azul": 0, "Verde": 0, "Vermelho": 0, "Amarelo": 0];
+
+        foreach (cartaBaralho; cartas)
+        {
+            contagemCores[cartaBaralho.getCor()]++;
+        }
+
+        string corMaiorQuantidade = "Azul";
+        int quantidadeMaior = 0;
+
+        foreach (cor, quantidade; contagemCores)
+        {
+            if (quantidade > quantidadeMaior)
+            {
+                corMaiorQuantidade = cor;
+                quantidadeMaior = quantidade;
+            }
+        }
+
+        carta.setCor(corMaiorQuantidade);
     }
 
     public override void carta_Joker(Carta carta)
     {
-        // Implementação do bot para escolher uma cor pro joker
+        Jogador jogador = uno.getJogadorVez();
+        Carta[] cartas = jogador.getMaoCartas().toArray();
+
+        auto contagemCores = ["Azul": 0, "Verde": 0, "Vermelho": 0, "Amarelo": 0];
+
+        foreach (cartaBaralho; cartas)
+        {
+            contagemCores[cartaBaralho.getCor()]++;
+        }
+
+        string corMaiorQuantidade = "Verde";
+        int quantidadeMaior = 0;
+
+        foreach (cor, quantidade; contagemCores)
+        {
+            if (quantidade > quantidadeMaior)
+            {
+                corMaiorQuantidade = cor;
+                quantidadeMaior = quantidade;
+            }
+        }
+
+        carta.setCor(corMaiorQuantidade);
     }
 }
 

@@ -15,7 +15,7 @@ import std.exception;
 
 export class Uno
 {
-  public static int MAXIMO_JOGADORES = 3;
+  public static int MAXIMO_JOGADORES = 2;
   public static int NUMERO_CARTAS_JOGADOR = 4;
 
   private Baralho baralho;
@@ -83,13 +83,18 @@ export class Uno
   public void gerarJogadores()
   {
 
+    int tamanhoBaralho = baralho.getCartasBaralho().length();
     int count = 1;
     string nomeJogador;
 
     while (true)
     {
 
-      if (toLower(nomeJogador) == DataInput.stringSaida || count > MAXIMO_JOGADORES - 1)
+      if (
+        toLower(nomeJogador) == DataInput.stringSaida ||
+        count > MAXIMO_JOGADORES - 1 ||
+        (NUMERO_CARTAS_JOGADOR * MAXIMO_JOGADORES) > tamanhoBaralho
+        )
       {
         break;
       }
@@ -101,7 +106,7 @@ export class Uno
       count++;
     }
 
-    //jogadores.add(new Bot("Burrinho Artificial"));
+    jogadores.add(new Bot("Burrinho Artificial"));
   }
 
   public void distribuirCartaJogadores()
@@ -185,7 +190,7 @@ export class Uno
         continue;
       }
 
-      carta = jogadorVez.jogar(cartaTopoPilha, this);
+      carta = jogadorVez.jogar(this);
 
       regrasUno.jogarCarta(carta);
       jogadorVez.removerCarta(carta);
@@ -229,8 +234,9 @@ export class Uno
     }
   }
 
-  public void mostrarVencedor() {
-     writeln(vencedor, "Venceu o jogo");
+  public void mostrarVencedor()
+  {
+    writeln(vencedor, "Venceu o jogo");
   }
 
   public void main()

@@ -61,11 +61,11 @@ export abstract class Jogador
 
         foreach (i, carta; toArray)
         {
-            writeln(++i, ". ",  carta.toString());
+            writeln(++i, ". ", carta.toString());
         }
     }
 
-    public abstract Carta jogar(Carta carta, Uno uno);
+    public abstract Carta jogar(Uno uno);
 }
 
 export class JogadorReal : Jogador
@@ -76,7 +76,7 @@ export class JogadorReal : Jogador
         super(nome);
     }
 
-    override Carta jogar(Carta cartaTopoLista, Uno uno)
+    override Carta jogar(Uno uno)
     {
         Carta[] cartaArray = this.maoCartas.toArray();
         int size = this.maoCartas.length();
@@ -115,50 +115,38 @@ export class Bot : Jogador
         super(nome);
     }
 
-    override Carta jogar(Carta cartaTopoDescarte, Uno uno)
+   
+    override Carta jogar(Uno uno)
     {
-        return null;
-    }
-
-    /*
-    override Carta jogar(Carta cartaTopoDescarte, Baralho baralho) {
 
         Carta[] cartaArray = this.maoCartas.toArray();
-        int size = this.maoCartas.length();
-        
-        writefln("Escolhendo uma carta ...");
 
-       foreach (Carta cartaMao; cartaArray)
-       {
-        if(cartaMao.getCor() == cartaTopoDescarte.getCor() || cartaMao.getNome() == cartaTopoDescarte.getNome())
-        { 
-            return cartaMao;
+        writefln("Escolhendo uma carta (Bot) ...");
+
+        foreach (cartaMao; cartaArray)
+        {
+
+            if (cartaMao.getNome() == "Joker" || cartaMao.getNome() == "JokerMais4")
+            {
+                return cartaMao;
+            }
+
+            try
+            {
+                uno.testarCartaValida(cartaMao);
+                return cartaMao;
+            }
+            catch (JogadaInvalidaException err)
+            {
+            }
+
         }
 
-         if(cartaMao.getNome() == "Joker" ||  cartaMao.getNome() == "JokerMais4")
-        { 
-            cartaMao.setCor(cartaTopoDescarte.getCor());
-            return cartaMao;
-        }
-       }
-       
-       // pega carta baralho
-       Carta cartaBaralho = baralho.getCarta();
-       if(cartaBaralho.getCor() == cartaTopoDescarte.getCor() || cartaBaralho.getNome() == cartaTopoDescarte.getNome())
-        { 
-            return cartaBaralho;
-        }
-
-         if(cartaBaralho.getNome() == "Joker" ||  cartaBaralho.getNome() == "JokerMais4")
-        { 
-            cartaBaralho.setCor(cartaTopoDescarte.getCor());
-            return cartaBaralho;
-        }
-
-       Carta cartaNull = new Carta();
-       
-
-       return cartaNull ;
+        throw new Exception("Não é pra chegar aqui");
     }
-    */
+
+    public override string toString() const {
+        return super.toString() ~ " (Bot)";
+    }
+
 }
