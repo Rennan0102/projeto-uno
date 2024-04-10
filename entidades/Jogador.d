@@ -6,6 +6,7 @@ import std.algorithm.iteration : map;
 import entidades.Utils;
 import entidades.Baralho;
 import entidades.Uno;
+import std.string;
 
 export abstract class Jogador
 {
@@ -99,7 +100,9 @@ export class JogadorReal : Jogador
             }
             catch (JogadaInvalidaException error)
             {
+                writeln();
                 writefln("Error: " ~ error.msg);
+                writeln();
                 continue;
             }
         }

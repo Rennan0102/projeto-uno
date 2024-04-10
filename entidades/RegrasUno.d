@@ -1,5 +1,6 @@
 module entidades.RegrasUno;
 
+import std.string;
 import entidades.Uno;
 import std.stdio;
 import entidades.Carta;
@@ -63,6 +64,7 @@ abstract class ExecutorCarta
 
     protected void carta_Bloqueio()
     {
+        writeln();
         writeln("Jogou a carta Bloqueio.");
         writeln();
         writefln(jogadores.getJogadorVezProximo().getNome() ~ " foi bloqueado. Perdeu a vez!");
@@ -72,6 +74,7 @@ abstract class ExecutorCarta
 
     protected void carta_Mais2()
     {
+        writeln();
         writefln(jogadores.getJogadorVezProximo().getNome() ~ " comprou duas cartas. Perdeu a vez!");
         writeln();
         uno.getBaralho().distribuirCartaJogador(jogadores.getJogadorVezProximo(), 2);
@@ -119,6 +122,7 @@ class ExecutorCartaBot : ExecutorCarta
         uno.getBaralho().distribuirCartaJogador(jogadores.getJogadorVezProximo(), 4);
         writeln();
         writefln(jogadores.getJogadorVezProximo().getNome() ~ " comprou quatro cartas. Perdeu a vez!");
+        writeln();
         Decoracao.aMimir(1);
         jogadores.pularVezJogador();
     }
@@ -175,6 +179,7 @@ class ExecutorCartaJogador : ExecutorCarta
 
         writeln();
         writefln(jogadores.getJogadorVezProximo().getNome() ~ " comprou quatro cartas. Perdeu a vez!");
+        writeln();
         jogadores.pularVezJogador();
     }
 

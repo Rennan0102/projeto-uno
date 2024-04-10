@@ -71,19 +71,6 @@ export class Baralho
     public void embaralharCartas()
     {
         cartasBaralho.shuffle();
-
-        Carta[] cartas = cartasBaralho.toArray();    
-
-        for(int x = 0; x < cartas.length; x++) {
-            Carta carta = cartas[x];
-
-            if (carta.getNome() != "Joker" && carta.getNome() != "JokerMais4") {
-                Carta removida = cartasBaralho.remove(x);
-                cartasBaralho.add(removida);
-                break;
-            }
-        }
-
     }
 
     public ArrayList!(Carta) getCartasBaralho()

@@ -12,6 +12,7 @@ import std.random;
 
 import core.stdc.stdlib;
 import core.thread;
+import std.format;
 
 class ArrayList(T)
 {
@@ -82,7 +83,8 @@ class ArrayList(T)
         return element;
     }
 
-    T getLast(){
+    T getLast()
+    {
         assert(size > 0, "Array vazio");
         auto lastIndex = size - 1;
         auto element = array[lastIndex];
@@ -175,7 +177,9 @@ class DataInput
     public static T selecionarElementoPeloUsuario(T)(T[] elements, int sizeArray, string label)
     {
 
+        writeln();
         writeln(label);
+        writeln();
 
         int i = 0;
 
@@ -199,7 +203,9 @@ class DataInput
                 selection = to!int(input);
 
                 if (selection >= 1 && selection <= sizeArray)
-                {
+                {   
+                    writeln("\n".replicate(5));
+                    Decoracao.limparTela();
                     return elements[selection - 1];
                 }
                 else
@@ -213,8 +219,8 @@ class DataInput
             }
 
         }
-
     }
+
 }
 
 class JogadaInvalidaException : Exception
@@ -370,6 +376,10 @@ public:
         return atual;
     }
 
+    bool getSentidoRotacao() {
+        return sentidoInvertido;
+    }
+
     Jogador getJogadorVez()
     {
         return vez.data;
@@ -393,8 +403,25 @@ public static:
         system("cls");
     }
 
-    void aMimir(int segundos){
+    void printSimetrico(string msg1, string msg2) {
+        auto str = format("%-13s   ("~msg2~")", msg1);
+
+        writeln(str);
+    }
+
+    void aMimir(int segundos)
+    {
         Thread.sleep(dur!"seconds"(segundos));
+    }
+
+    void mensagemRetangulo(string message)
+    {
+        size_t width = message.length + 4; 
+
+        writeln("|" ~ "-".replicate(width - 2) ~ "|");
+        writeln("| " ~ message ~ " |");
+        writeln("|" ~ "-".replicate(width - 2) ~ "|");
+        writeln();
     }
 
 }

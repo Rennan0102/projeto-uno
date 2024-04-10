@@ -15,7 +15,7 @@ import std.exception;
 
 export class Uno
 {
-  public static int MAXIMO_JOGADORES = 4;
+  public static int MAXIMO_JOGADORES = 7;
   public static int NUMERO_CARTAS_JOGADOR = 7;
 
   private Baralho baralho;
@@ -42,7 +42,7 @@ export class Uno
   public void telaInicial()
   {
 
-    int tempo = 2;
+    int tempo = 4;
     write("\x1b[31m");
 
     writeln("\n--------------------------------------------------------------------------------");
@@ -72,11 +72,10 @@ export class Uno
     writeln("hhhhhhhhhdmdddhhyyyyyhhdmdhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
     writeln("hhhhhhhhhhhdhhhhhhhhhhddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
     writeln("hhhhhhhhhhhhhhhdddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-    
+    writeln("--------------------------------------------------------------------------------");
+
     write("\x1b[0m");
 
-    Decoracao.aMimir(tempo);
-    
     writeln();
     writeln();
 
@@ -84,25 +83,40 @@ export class Uno
 
     Decoracao.aMimir(tempo);
 
+    Decoracao.limparTela();
   }
 
   public void gerarJogadores()
   {
-    writef("Digite o nome do jogador 1: \n");
+
+    Decoracao.mensagemRetangulo("Criacao de Jogadores");
+
+    writef("Digite o seu nome: \n");
     readf("%s\n", &nomeJogador);
 
+     int numeroJogadores = 0;
+     string input;
+
+     while (numeroJogadores > MAXIMO_JOGADORES - 1 || numeroJogadores <= 0) {
+        write("Digite o numero de bots: ");
+        input = readln();
+        input = input.replace("\n", "");
+        numeroJogadores = to!int(input);
+     }
+
+
     jogadores.add(new JogadorReal(nomeJogador));
-    
-    for (int i = 0; i < MAXIMO_JOGADORES - 1; i++){
+
+    for (int i = 0; i < numeroJogadores; i++)
+    {
       jogadores.add(new Bot("Burrinho Artificial " ~ to!string(i + 1)));
     }
+
+    Decoracao.limparTela();
   }
 
   public void distribuirCartaJogadores()
   {
-    writeln();
-    writeln("Distribuindo Cartas...");
-    Decoracao.aMimir(1);
 
     foreach (ref jogador; jogadores.toArray())
     {
@@ -111,21 +125,38 @@ export class Uno
 
   }
 
+  public void mostrarJogadores()
+  {
+
+    Decoracao.mensagemRetangulo("Lista de Jogadores");
+
+    auto jogadoresLista = jogadores.toArray();
+
+    foreach (i, jogador; jogadoresLista)
+    {
+      writeln(++i, ". ", jogador.toString(), " -- ", NUMERO_CARTAS_JOGADOR, " Cartas");
+    }
+    
+
+    Decoracao.aMimir(4);
+    Decoracao.limparTela();
+  }
+
   public void adicionarPrimeiraCartaPilhaDescarte()
   {
-    Decoracao.aMimir(1);
-    if (baralho.getCartasBaralho().getLast().getNome() != "Joker"
-    && baralho.getCartasBaralho().getLast().getNome() != "JokerMais4"
-    && baralho.getCartasBaralho().getLast().getNome() != "Bloqueio" 
-    && baralho.getCartasBaralho().getLast().getNome() != "Inverter"
-    && baralho.getCartasBaralho().getLast().getNome() != "Mais2"){
-      Carta carta = baralho.getCartasBaralho().pop();
-      cartasUsadas.push(carta);
-    } else {
-      writeln("Carta de inicializacao invalida. Comprando outra...");
-      Decoracao.aMimir(1);
-      baralho.embaralharCartas();
-      adicionarPrimeiraCartaPilhaDescarte();
+
+    Carta[] cartas = this.baralho.getCartasBaralho().toArray();
+
+    for (int x = 0; x < cartas.length; x++)
+    {
+      Carta carta = cartas[x];
+
+      if (carta.getNome() != "Joker" && carta.getNome() != "JokerMais4")
+      {
+        Carta removida = this.baralho.getCartasBaralho().remove(x);
+        cartasUsadas.push(removida);
+        break;
+      }
     }
   }
 
@@ -137,26 +168,23 @@ export class Uno
     int totalCartasJogador;
     Carta cartaTopoPilha;
 
+    Decoracao.mensagemRetangulo("Comeco do Jogo");
+
     while (!jogoEncerrado)
     {
+      bool sentidoRotacao = jogadores.getSentidoRotacao();
       jogadorVez = jogadores.getJogadorVez();
-      totalCartasJogador = jogadorVez.getMaoCartas().length();
+      totalCartasJogador = jogadorVez.getMaoCartas().length;
       cartaTopoPilha = cartasUsadas.getLast();
       possuiCartaValida = false;
 
-      writeln();
-      writeln("Ultima carta jogada: " ~ cartaTopoPilha.toString());
-      writeln();
-
-      writeln("Vez do Jogador: " ~ jogadorVez.toString());
-      Decoracao.aMimir(1);
-
-      writeln("Numero de cartas na mao de " ~ jogadorVez.getNome() ~ ": " ~ to!string(jogadorVez.getMaoCartas().length()) ~ " cartas!");
-
-      if (jogadorVez.getMaoCartas().length() == 1){
+      if (jogadorVez.isUno())
+      {
+        writeln();
         write("\x1b[32m");
         writeln("UNO!");
         write("\x1b[0m");
+        writeln();
       }
 
       for (int x = 0; x < totalCartasJogador; x++)
@@ -178,28 +206,40 @@ export class Uno
       {
         Carta cartaComprada = baralho.getCartasBaralho().pop();
 
+        writeln();
+        writeln(jogadorVez.toString(), "Nao possui cartas valida, indo comprar...");
+
         try
         {
-          writeln(jogadorVez.getNome() ~ " comprou e jogou " ~ cartaComprada.getNome());
           regrasUno.jogarCarta(cartaComprada);
+          writeln();
+          writeln(jogadorVez.getNome() ~ " comprou e jogou ", cartaComprada.toString());
           cartasUsadas.push(cartaComprada);
         }
         catch (JogadaInvalidaException)
         {
-          writeln("Nao possui carta valida, mesmo comprando, indo pro proximo....");
-
+          writeln();
+          writeln(jogadorVez.toString(), " Nao possui carta valida, mesmo comprando, indo pro proximo....");
           jogadorVez.adicionarCarta(cartaComprada);
-
-          if (jogadorVez.getNome() == nomeJogador){
-            jogadorVez.mostrarMaoCartas();
-          }
-
           jogadores.mudarVezJogador();
           writeln();
         }
 
+        Decoracao.aMimir(2);
+        Decoracao.limparTela();
+
         continue;
       }
+
+      writeln();
+      writeln("-".replicate(50));
+      Decoracao.printSimetrico("Ultima carta jogada:", cartaTopoPilha.toString());
+      Decoracao.printSimetrico("Vez do Jogador:", jogadorVez.toString());
+      Decoracao.printSimetrico("Sentido Rotacao:", sentidoRotacao ? "Invertido" : "Normal");
+      writeln("-".replicate(50));
+      writeln();
+
+      Decoracao.aMimir(1);
 
       carta = jogadorVez.jogar(this);
 
@@ -216,7 +256,26 @@ export class Uno
         continue;
       }
 
+      if (baralho.getCartasBaralho().length == 0)
+      {
+        reporCartas();
+      }
+
     }
+  }
+
+  public void reporCartas()
+  {
+    auto cartas = baralho.getCartasBaralho();
+
+    while (!cartasUsadas.isEmpty())
+    {
+      cartas.add(
+        cartasUsadas.pop()
+      );
+    }
+
+    cartas.shuffle();
   }
 
   public void testarCartaValida(Carta carta)
@@ -228,6 +287,14 @@ export class Uno
 
     string nomeCarta = carta.getNome();
     string corCarta = carta.getCor();
+
+    if (
+      (nomeCartaTopoPilha == "Joker" || nomeCartaTopoPilha == "JokerMais4") &&
+      (nomeCarta == "Joker" || nomeCarta == "JokerMais4")
+      )
+    {
+      throw new JogadaInvalidaException("Não é possiel jogar 2 jokes seguidos");
+    }
 
     if ((nomeCartaTopoPilha == "Joker" || corCartaTopoPilha == "JokerMais4") && corCarta != corCartaTopoPilha)
     {
@@ -258,59 +325,101 @@ export class Uno
     writeln();
 
     writeln(".........        .. .......         ");
-    writeln("                                                                 ....:-----:..........------..         ");
-    writeln("                                                                .:----::::----:..:-----::::--..        ");
-    writeln("                                                              ..:--::::::::::------::::::::--:.        ");
-    writeln("                                                              ..:-:::::::::::::--:::::::::::-:.        ");
-    writeln("                                             .......          ..:-:::::::::::::::::::::::::--..        ");
-    writeln("                                        ......:---:.....      ..:--::::::--:::::::::::---::--..        ");
-    writeln("                                       ......:-:::-:....      ...---::::--::::::-::-::--::--...        ");
-    writeln("                                      ..:--::::::::----:..      ..---::::::--::------::::--...         ");
-    writeln(" ...                                  ..:-::::::::::::-:..       ...---:::::--------:::---..  .        ");
-    writeln(" ..                                   ...:-:::---:::::-:..         ..:--::::::::::::::--:...           ");
-    writeln("                 ..                     .:-:--=====-::-:.            ..:---:::::::::---:..             ");
-    writeln("                                        ..:-==----==-:::.            ....:--:::::::--:....             ");
-    writeln("                                        ..:-::::::-=-....              ....:--------:...               ");
-    writeln("                             .=##=..   ..-=-:::::-::=-..                    ....:---:..                ");
-    writeln("                        ...=%@@@@@@@=...-=-:-:::::::-=-....-+**+-..            ...:-:..              ");
-    writeln("                        .-@@@@#:=@@@@@===-::::::::-::--=@@@@@@@@@@@#..               .:-:.             ");
-    writeln("                      .-@@@@=... ..#@%==----------::::-=#@@=:.  :%@@@..               .:-:.            ");
-    writeln("                    ..*@@@+..     ..:==--::::::::::::--==.       :#@@@..               .::..           ");
-    writeln("                    :%@@@-.         ..-==-::::::::----==-.        -@@@=.               ..-:.           ");
-    writeln("                   .=@@%:.           .---::-=========::...        .+@@%:                .-:.           ");
-    writeln("             :#@%-.......           .:--..:--:..---..              :%@@= .......        .-:.           ");
-    writeln("             :#@@@@-                .--:..--:..:--:.               ..==.:+#@@@%:.      .::.            ");
-    writeln("            .==-==-.                .:-:..---...-:..                   .%@@@@@%-.     .:-:.            ");
-    writeln("            +@@@@%-                      ... .                         .........     .:-:.             ");
-    writeln("            .=%@@@=                                                    .-@@@@@@=.   ..-:.              ");
-    writeln("             .....                                                     .:%@@#+=..  ..--..              ");
-    writeln("               ..............                                                    ..:-:..               ");
-    writeln("               ..:::::..*@@@+    ..--:..:==-..       ...  .-=-..      ...      ..:--:.                 ");
-    writeln("               ..:::::..+@@@=  ...%@@@+%@@@@@+:..=%%=.....#@@@%.     .......  ..:-:..                  ");
-    writeln("               ...%@@#.       .....%@@@@@%#@@@@@@@@@.::...#@@.     ::::::...:-:...                   ");
-    writeln("                 .=@@@@-..   ..::....:@@@-:--@@@@#*:.:::::.....     .:---:..:-:..                      ");
-    writeln("                  .:#@@@%-... ....   :@@@*:::#@@@..::::::::.      ..-%@@%:--:..                        ");
-    writeln("                   ..:@@@@@@%=--:.   .=@@*:::%@@+..::::.....    .-+@@@@%--:...                         ");
-    writeln("            ..      .#@@@@@@@@@@@*.   =@@@=::%@@=.........:+%@@@@@@@@@=--:.                            ");
-    writeln("                    .%@@%. .......    .@@@#:=@@@=...:::..:@@@@@@%*#@@%-:. .                            ");
-    writeln("                    .:@@@%-.  ....    .-@@%-#@@%...:::............:@@+-..                              ");
-    writeln("                     ..%@@@+...::::..  .@@@@@@@-   ....      ..:+%@@@-:.                               ");
-    writeln("                     ..#@@@#.::::::..  .:#@@@@=.             .#@@@@@=-:.                               ");
-    writeln("                     .*@@@=..:::::...   ...::...            .:@@@=...-:.                               ");
-    writeln("                  .:#@@@@+..::::..    .:....                .+@@@:  .:-..   ..:---:.                   ");
-    writeln("                 .=@@@@@#.........    .---:.                :@@@+    .:-:.. .-:..:-.                   ");
-    
+    writeln(
+      "                                                                 ....:-----:..........------..         ");
+    writeln(
+      "                                                                .:----::::----:..:-----::::--..        ");
+    writeln(
+      "                                                              ..:--::::::::::------::::::::--:.        ");
+    writeln(
+      "                                                              ..:-:::::::::::::--:::::::::::-:.        ");
+    writeln(
+      "                                             .......          ..:-:::::::::::::::::::::::::--..        ");
+    writeln(
+      "                                        ......:---:.....      ..:--::::::--:::::::::::---::--..        ");
+    writeln(
+      "                                       ......:-:::-:....      ...---::::--::::::-::-::--::--...        ");
+    writeln(
+      "                                      ..:--::::::::----:..      ..---::::::--::------::::--...         ");
+    writeln(
+      " ...                                  ..:-::::::::::::-:..       ...---:::::--------:::---..  .        ");
+    writeln(
+      " ..                                   ...:-:::---:::::-:..         ..:--::::::::::::::--:...           ");
+    writeln(
+      "                 ..                     .:-:--=====-::-:.            ..:---:::::::::---:..             ");
+    writeln(
+      "                                        ..:-==----==-:::.            ....:--:::::::--:....             ");
+    writeln(
+      "                                        ..:-::::::-=-....              ....:--------:...               ");
+    writeln(
+      "                             .=##=..   ..-=-:::::-::=-..                    ....:---:..                ");
+    writeln(
+      "                        ...=%@@@@@@@=...-=-:-:::::::-=-....-+**+-..            ...:-:..              ");
+    writeln(
+      "                        .-@@@@#:=@@@@@===-::::::::-::--=@@@@@@@@@@@#..               .:-:.             ");
+    writeln(
+      "                      .-@@@@=... ..#@%==----------::::-=#@@=:.  :%@@@..               .:-:.            ");
+    writeln(
+      "                    ..*@@@+..     ..:==--::::::::::::--==.       :#@@@..               .::..           ");
+    writeln(
+      "                    :%@@@-.         ..-==-::::::::----==-.        -@@@=.               ..-:.           ");
+    writeln(
+      "                   .=@@%:.           .---::-=========::...        .+@@%:                .-:.           ");
+    writeln(
+      "             :#@%-.......           .:--..:--:..---..              :%@@= .......        .-:.           ");
+    writeln(
+      "             :#@@@@-                .--:..--:..:--:.               ..==.:+#@@@%:.      .::.            ");
+    writeln(
+      "            .==-==-.                .:-:..---...-:..                   .%@@@@@%-.     .:-:.            ");
+    writeln(
+      "            +@@@@%-                      ... .                         .........     .:-:.             ");
+    writeln(
+      "            .=%@@@=                                                    .-@@@@@@=.   ..-:.              ");
+    writeln(
+      "             .....                                                     .:%@@#+=..  ..--..              ");
+    writeln(
+      "               ..............                                                    ..:-:..               ");
+    writeln(
+      "               ..:::::..*@@@+    ..--:..:==-..       ...  .-=-..      ...      ..:--:.                 ");
+    writeln(
+      "               ..:::::..+@@@=  ...%@@@+%@@@@@+:..=%%=.....#@@@%.     .......  ..:-:..                  ");
+    writeln(
+      "               ...%@@#.       .....%@@@@@%#@@@@@@@@@.::...#@@.     ::::::...:-:...                   ");
+    writeln(
+      "                 .=@@@@-..   ..::....:@@@-:--@@@@#*:.:::::.....     .:---:..:-:..                      ");
+    writeln(
+      "                  .:#@@@%-... ....   :@@@*:::#@@@..::::::::.      ..-%@@%:--:..                        ");
+    writeln(
+      "                   ..:@@@@@@%=--:.   .=@@*:::%@@+..::::.....    .-+@@@@%--:...                         ");
+    writeln(
+      "            ..      .#@@@@@@@@@@@*.   =@@@=::%@@=.........:+%@@@@@@@@@=--:.                            ");
+    writeln(
+      "                    .%@@%. .......    .@@@#:=@@@=...:::..:@@@@@@%*#@@%-:. .                            ");
+    writeln(
+      "                    .:@@@%-.  ....    .-@@%-#@@%...:::............:@@+-..                              ");
+    writeln(
+      "                     ..%@@@+...::::..  .@@@@@@@-   ....      ..:+%@@@-:.                               ");
+    writeln(
+      "                     ..#@@@#.::::::..  .:#@@@@=.             .#@@@@@=-:.                               ");
+    writeln(
+      "                     .*@@@=..:::::...   ...::...            .:@@@=...-:.                               ");
+    writeln(
+      "                  .:#@@@@+..::::..    .:....                .+@@@:  .:-..   ..:---:.                   ");
+    writeln(
+      "                 .=@@@@@#.........    .---:.                :@@@+    .:-:.. .-:..:-.                   ");
+
     writeln();
   }
 
   public void main()
   {
-    this.telaInicial();
+    //this.telaInicial();
 
     this.baralho.gerarCartas();
     this.baralho.embaralharCartas();
 
     this.gerarJogadores();
+    this.mostrarJogadores();
     this.distribuirCartaJogadores();
 
     this.jogadores.sortearJogadorVez();
