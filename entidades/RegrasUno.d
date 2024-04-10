@@ -38,11 +38,9 @@ abstract class ExecutorCarta
             break;
         case "Inverter":
             carta_Inverter();
-            jogadores.mudarVezJogador();
             break;
         case "Mais2":
             carta_Mais2();
-            jogadores.pularVezJogador();
             break;
         case "Joker":
             carta_Joker(carta);
@@ -50,7 +48,6 @@ abstract class ExecutorCarta
             break;
         case "JokerMais4":
             carta_JokerMais4(carta);
-            jogadores.pularVezJogador();
             break;
         default:
             jogadores.mudarVezJogador();
@@ -61,17 +58,22 @@ abstract class ExecutorCarta
     protected void carta_Inverter()
     {
         jogadores.trocarSentidoRotacao();
+        jogadores.mudarVezJogador();
     }
 
     protected void carta_Bloqueio()
     {
         writeln("Jogou a carta Bloqueio.");
+        writefln(jogadores.getJogadorVezProximo().getNome() ~ " foi bloqueado. Perdeu a vez!");
         jogadores.pularVezJogador();
     }
 
     protected void carta_Mais2()
     {
+        writefln(jogadores.getJogadorVezProximo().getNome() ~ " comprou duas cartas. Perdeu a vez!");
+
         uno.getBaralho().distribuirCartaJogador(jogadores.getJogadorVezProximo(), 2);
+        jogadores.pularVezJogador();
     }
 
     protected abstract void carta_JokerMais4(Carta carta);
@@ -111,6 +113,9 @@ class ExecutorCartaBot : ExecutorCarta
         }
 
         carta.setCor(corMaiorQuantidade);
+        uno.getBaralho().distribuirCartaJogador(jogadores.getJogadorVezProximo(), 4);
+        writefln(jogadores.getJogadorVezProximo().getNome() ~ " comprou quatro cartas. Perdeu a vez!");
+        jogadores.pularVezJogador();
     }
 
     public override void carta_Joker(Carta carta)
@@ -162,6 +167,9 @@ class ExecutorCartaJogador : ExecutorCarta
         carta.setCor(corDaCarta);
 
         uno.getBaralho().distribuirCartaJogador(jogadores.getJogadorVezProximo(), 4);
+
+        writefln(jogadores.getJogadorVezProximo().getNome() ~ " comprou quatro cartas. Perdeu a vez!");
+        jogadores.pularVezJogador();
     }
 
     public override void carta_Joker(Carta carta)

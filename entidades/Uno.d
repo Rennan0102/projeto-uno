@@ -15,8 +15,8 @@ import std.exception;
 
 export class Uno
 {
-  public static int MAXIMO_JOGADORES = 2;
-  public static int NUMERO_CARTAS_JOGADOR = 4;
+  public static int MAXIMO_JOGADORES = 4;
+  public static int NUMERO_CARTAS_JOGADOR = 7;
 
   private Baralho baralho;
   private ListaJogadores jogadores;
@@ -82,31 +82,16 @@ export class Uno
 
   public void gerarJogadores()
   {
-
-    int tamanhoBaralho = baralho.getCartasBaralho().length();
-    int count = 1;
     string nomeJogador;
 
-    while (true)
-    {
+    writef("Digite o nome do jogador 1: \n");
+    readf("%s\n", &nomeJogador);
 
-      if (
-        toLower(nomeJogador) == DataInput.stringSaida ||
-        count > MAXIMO_JOGADORES - 1 ||
-        (NUMERO_CARTAS_JOGADOR * MAXIMO_JOGADORES) > tamanhoBaralho
-        )
-      {
-        break;
-      }
-
-      writef("Digite o nome do jogador %d \n", count);
-      readf("%s\n", &nomeJogador);
-
-      jogadores.add(new JogadorReal(nomeJogador));
-      count++;
+    jogadores.add(new JogadorReal(nomeJogador));
+    
+    for (int i = 0; i < MAXIMO_JOGADORES - 1; i++){
+      jogadores.add(new Bot("Burrinho Artificial " ~ to!string(i + 1)));
     }
-
-    jogadores.add(new Bot("Burrinho Artificial"));
   }
 
   public void distribuirCartaJogadores()
@@ -124,9 +109,16 @@ export class Uno
 
   public void adicionarPrimeiraCartaPilhaDescarte()
   {
-    Carta carta = baralho.getCartasBaralho().pop();
-
-    cartasUsadas.push(carta);
+    Decoracao.aMimir(1);
+    if (baralho.getCartasBaralho().getLast().getNome() != "Joker" && baralho.getCartasBaralho().getLast().getNome() != "JokerMais4"){
+      Carta carta = baralho.getCartasBaralho().pop();
+      cartasUsadas.push(carta);
+    } else {
+      writeln("Carta de inicializacao invalida. Comprando outra...");
+      Decoracao.aMimir(1);
+      baralho.embaralharCartas();
+      adicionarPrimeiraCartaPilhaDescarte();
+    }
   }
 
   public void comecarJogo()
@@ -146,11 +138,10 @@ export class Uno
       cartaTopoPilha = cartasUsadas.getLast();
       possuiCartaValida = false;
 
-      writeln("Carta do Topo da Pilha de Descarte: " ~ cartaTopoPilha.toString());
+      writeln("Última carta jogada: " ~ cartaTopoPilha.toString());
       writeln();
 
       writeln("Vez do Jogador: " ~ jogadorVez.toString());
-      writeln("\n");
 
       for (int x = 0; x < totalCartasJogador; x++)
       {
@@ -173,6 +164,7 @@ export class Uno
 
         try
         {
+          // colocar um print de comprar carta e jogou tal carta
           regrasUno.jogarCarta(cartaComprada);
           cartasUsadas.push(cartaComprada);
         }

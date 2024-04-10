@@ -109,19 +109,18 @@ export class JogadorReal : Jogador
 
 export class Bot : Jogador
 {
-
     public this(string nome)
     {
         super(nome);
     }
 
-   
     override Carta jogar(Uno uno)
     {
 
         Carta[] cartaArray = this.maoCartas.toArray();
 
-        writefln("Escolhendo uma carta (Bot) ...");
+        writefln("Escolhendo uma carta (%s) ...", nome);
+        Decoracao.aMimir(2);
 
         foreach (cartaMao; cartaArray)
         {

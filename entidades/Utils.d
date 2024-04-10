@@ -1,14 +1,17 @@
 module entidades.Utils;
 
+import entidades.Jogador;
+import entidades.Carta;
+
 import std.stdio;
 import std.algorithm;
 import std.array;
 import std.algorithm.iteration : map;
 import std.conv : to;
 import std.random;
-import entidades.Jogador;
-import entidades.Carta;
+
 import core.stdc.stdlib;
+import core.thread;
 
 class ArrayList(T)
 {
@@ -75,6 +78,14 @@ class ArrayList(T)
         array = array[0 .. lastIndex];
 
         size--;
+
+        return element;
+    }
+
+    T getLast(){
+        assert(size > 0, "Array vazio");
+        auto lastIndex = size - 1;
+        auto element = array[lastIndex];
 
         return element;
     }
@@ -161,8 +172,6 @@ class Stack(T)
 
 class DataInput
 {
-    public static string stringSaida = "-s";
-
     public static T selecionarElementoPeloUsuario(T)(T[] elements, int sizeArray, string label)
     {
 
@@ -382,6 +391,10 @@ public static:
     void limparTela()
     {
         system("cls");
+    }
+
+    void aMimir(int segundos){
+        Thread.sleep(dur!"seconds"(segundos));
     }
 
 }
