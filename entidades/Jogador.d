@@ -141,7 +141,7 @@ export class Bot : Jogador
 
         }
 
-        throw new Exception("Não é pra chegar aqui");
+        throw new Exception("Nao eh pra chegar aqui");
     }
 
     public override string toString() const {

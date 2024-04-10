@@ -64,15 +64,18 @@ abstract class ExecutorCarta
     protected void carta_Bloqueio()
     {
         writeln("Jogou a carta Bloqueio.");
+        writeln();
         writefln(jogadores.getJogadorVezProximo().getNome() ~ " foi bloqueado. Perdeu a vez!");
+        Decoracao.aMimir(1);
         jogadores.pularVezJogador();
     }
 
     protected void carta_Mais2()
     {
         writefln(jogadores.getJogadorVezProximo().getNome() ~ " comprou duas cartas. Perdeu a vez!");
-
+        writeln();
         uno.getBaralho().distribuirCartaJogador(jogadores.getJogadorVezProximo(), 2);
+        Decoracao.aMimir(1);
         jogadores.pularVezJogador();
     }
 
@@ -114,7 +117,9 @@ class ExecutorCartaBot : ExecutorCarta
 
         carta.setCor(corMaiorQuantidade);
         uno.getBaralho().distribuirCartaJogador(jogadores.getJogadorVezProximo(), 4);
+        writeln();
         writefln(jogadores.getJogadorVezProximo().getNome() ~ " comprou quatro cartas. Perdeu a vez!");
+        Decoracao.aMimir(1);
         jogadores.pularVezJogador();
     }
 
@@ -168,6 +173,7 @@ class ExecutorCartaJogador : ExecutorCarta
 
         uno.getBaralho().distribuirCartaJogador(jogadores.getJogadorVezProximo(), 4);
 
+        writeln();
         writefln(jogadores.getJogadorVezProximo().getNome() ~ " comprou quatro cartas. Perdeu a vez!");
         jogadores.pularVezJogador();
     }

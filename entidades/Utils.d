@@ -204,12 +204,12 @@ class DataInput
                 }
                 else
                 {
-                    writeln("Índice inválido. Tente novamente.");
+                    writeln("Indice invalido. Tente novamente.");
                 }
             }
             catch (Exception e)
             {
-                writeln("Entrada inválida. Tente novamente.");
+                writeln("Entrada invalida. Tente novamente.");
             }
 
         }
@@ -357,7 +357,7 @@ public:
 
         if (posicao < 0 || posicao >= this.tamanho)
         {
-            throw new Exception("Posição inválida");
+            throw new Exception("Posicao invalida");
         }
 
         Node!Jogador atual = this.inicio;

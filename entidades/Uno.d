@@ -26,6 +26,7 @@ export class Uno
   private RegrasUno regrasUno;
   private int totalJogadas;
   private Jogador vencedor;
+  private string nomeJogador;
 
   public this(RegrasUno regrasUno)
   {
@@ -41,7 +42,8 @@ export class Uno
   public void telaInicial()
   {
 
-    int tempo = 3;
+    int tempo = 2;
+    write("\x1b[31m");
 
     writeln("\n--------------------------------------------------------------------------------");
     writeln("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
@@ -70,20 +72,22 @@ export class Uno
     writeln("hhhhhhhhhdmdddhhyyyyyhhdmdhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
     writeln("hhhhhhhhhhhdhhhhhhhhhhddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
     writeln("hhhhhhhhhhhhhhhdddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    
+    write("\x1b[0m");
 
+    Decoracao.aMimir(tempo);
+    
     writeln();
     writeln();
 
-    writeln("O jogo irá começar em", tempo, "segundos...");
+    writeln("O jogo ira comecar em ", tempo, " segundos...");
 
-    Thread.sleep(dur!"seconds"(tempo));
+    Decoracao.aMimir(tempo);
 
   }
 
   public void gerarJogadores()
   {
-    string nomeJogador;
-
     writef("Digite o nome do jogador 1: \n");
     readf("%s\n", &nomeJogador);
 
@@ -98,7 +102,7 @@ export class Uno
   {
     writeln();
     writeln("Distribuindo Cartas...");
-    Thread.sleep(dur!"seconds"(1));
+    Decoracao.aMimir(1);
 
     foreach (ref jogador; jogadores.toArray())
     {
@@ -110,7 +114,11 @@ export class Uno
   public void adicionarPrimeiraCartaPilhaDescarte()
   {
     Decoracao.aMimir(1);
-    if (baralho.getCartasBaralho().getLast().getNome() != "Joker" && baralho.getCartasBaralho().getLast().getNome() != "JokerMais4"){
+    if (baralho.getCartasBaralho().getLast().getNome() != "Joker"
+    && baralho.getCartasBaralho().getLast().getNome() != "JokerMais4"
+    && baralho.getCartasBaralho().getLast().getNome() != "Bloqueio" 
+    && baralho.getCartasBaralho().getLast().getNome() != "Inverter"
+    && baralho.getCartasBaralho().getLast().getNome() != "Mais2"){
       Carta carta = baralho.getCartasBaralho().pop();
       cartasUsadas.push(carta);
     } else {
@@ -123,7 +131,6 @@ export class Uno
 
   public void comecarJogo()
   {
-
     Carta carta;
     Jogador jogadorVez;
     bool possuiCartaValida;
@@ -132,16 +139,25 @@ export class Uno
 
     while (!jogoEncerrado)
     {
-
       jogadorVez = jogadores.getJogadorVez();
       totalCartasJogador = jogadorVez.getMaoCartas().length();
       cartaTopoPilha = cartasUsadas.getLast();
       possuiCartaValida = false;
 
-      writeln("Última carta jogada: " ~ cartaTopoPilha.toString());
+      writeln();
+      writeln("Ultima carta jogada: " ~ cartaTopoPilha.toString());
       writeln();
 
       writeln("Vez do Jogador: " ~ jogadorVez.toString());
+      Decoracao.aMimir(1);
+
+      writeln("Numero de cartas na mao de " ~ jogadorVez.getNome() ~ ": " ~ to!string(jogadorVez.getMaoCartas().length()) ~ " cartas!");
+
+      if (jogadorVez.getMaoCartas().length() == 1){
+        write("\x1b[32m");
+        writeln("UNO!");
+        write("\x1b[0m");
+      }
 
       for (int x = 0; x < totalCartasJogador; x++)
       {
@@ -164,16 +180,19 @@ export class Uno
 
         try
         {
-          // colocar um print de comprar carta e jogou tal carta
+          writeln(jogadorVez.getNome() ~ " comprou e jogou " ~ cartaComprada.getNome());
           regrasUno.jogarCarta(cartaComprada);
           cartasUsadas.push(cartaComprada);
         }
         catch (JogadaInvalidaException)
         {
-          writeln("Não possui carta valida, mesmo comprando, indo pro proximo....");
+          writeln("Nao possui carta valida, mesmo comprando, indo pro proximo....");
 
           jogadorVez.adicionarCarta(cartaComprada);
-          jogadorVez.mostrarMaoCartas();
+
+          if (jogadorVez.getNome() == nomeJogador){
+            jogadorVez.mostrarMaoCartas();
+          }
 
           jogadores.mudarVezJogador();
           writeln();
@@ -222,13 +241,66 @@ export class Uno
       corCarta != corCartaTopoPilha
       )
     {
-      throw new JogadaInvalidaException("Jogada Inválida");
+      throw new JogadaInvalidaException("Jogada Invalida!!!");
     }
   }
 
   public void mostrarVencedor()
   {
-    writeln(vencedor, "Venceu o jogo");
+    writeln();
+    write("\x1b[34m");
+    writeln(vencedor, " Venceu o jogo!!!");
+    write("\x1b[0m");
+
+    Decoracao.aMimir(2);
+
+    writeln();
+    writeln();
+
+    writeln(".........        .. .......         ");
+    writeln("                                                                 ....:-----:..........------..         ");
+    writeln("                                                                .:----::::----:..:-----::::--..        ");
+    writeln("                                                              ..:--::::::::::------::::::::--:.        ");
+    writeln("                                                              ..:-:::::::::::::--:::::::::::-:.        ");
+    writeln("                                             .......          ..:-:::::::::::::::::::::::::--..        ");
+    writeln("                                        ......:---:.....      ..:--::::::--:::::::::::---::--..        ");
+    writeln("                                       ......:-:::-:....      ...---::::--::::::-::-::--::--...        ");
+    writeln("                                      ..:--::::::::----:..      ..---::::::--::------::::--...         ");
+    writeln(" ...                                  ..:-::::::::::::-:..       ...---:::::--------:::---..  .        ");
+    writeln(" ..                                   ...:-:::---:::::-:..         ..:--::::::::::::::--:...           ");
+    writeln("                 ..                     .:-:--=====-::-:.            ..:---:::::::::---:..             ");
+    writeln("                                        ..:-==----==-:::.            ....:--:::::::--:....             ");
+    writeln("                                        ..:-::::::-=-....              ....:--------:...               ");
+    writeln("                             .=##=..   ..-=-:::::-::=-..                    ....:---:..                ");
+    writeln("                        ...=%@@@@@@@=...-=-:-:::::::-=-....-+**+-..            ...:-:..              ");
+    writeln("                        .-@@@@#:=@@@@@===-::::::::-::--=@@@@@@@@@@@#..               .:-:.             ");
+    writeln("                      .-@@@@=... ..#@%==----------::::-=#@@=:.  :%@@@..               .:-:.            ");
+    writeln("                    ..*@@@+..     ..:==--::::::::::::--==.       :#@@@..               .::..           ");
+    writeln("                    :%@@@-.         ..-==-::::::::----==-.        -@@@=.               ..-:.           ");
+    writeln("                   .=@@%:.           .---::-=========::...        .+@@%:                .-:.           ");
+    writeln("             :#@%-.......           .:--..:--:..---..              :%@@= .......        .-:.           ");
+    writeln("             :#@@@@-                .--:..--:..:--:.               ..==.:+#@@@%:.      .::.            ");
+    writeln("            .==-==-.                .:-:..---...-:..                   .%@@@@@%-.     .:-:.            ");
+    writeln("            +@@@@%-                      ... .                         .........     .:-:.             ");
+    writeln("            .=%@@@=                                                    .-@@@@@@=.   ..-:.              ");
+    writeln("             .....                                                     .:%@@#+=..  ..--..              ");
+    writeln("               ..............                                                    ..:-:..               ");
+    writeln("               ..:::::..*@@@+    ..--:..:==-..       ...  .-=-..      ...      ..:--:.                 ");
+    writeln("               ..:::::..+@@@=  ...%@@@+%@@@@@+:..=%%=.....#@@@%.     .......  ..:-:..                  ");
+    writeln("               ...%@@#.       .....%@@@@@%#@@@@@@@@@.::...#@@.     ::::::...:-:...                   ");
+    writeln("                 .=@@@@-..   ..::....:@@@-:--@@@@#*:.:::::.....     .:---:..:-:..                      ");
+    writeln("                  .:#@@@%-... ....   :@@@*:::#@@@..::::::::.      ..-%@@%:--:..                        ");
+    writeln("                   ..:@@@@@@%=--:.   .=@@*:::%@@+..::::.....    .-+@@@@%--:...                         ");
+    writeln("            ..      .#@@@@@@@@@@@*.   =@@@=::%@@=.........:+%@@@@@@@@@=--:.                            ");
+    writeln("                    .%@@%. .......    .@@@#:=@@@=...:::..:@@@@@@%*#@@%-:. .                            ");
+    writeln("                    .:@@@%-.  ....    .-@@%-#@@%...:::............:@@+-..                              ");
+    writeln("                     ..%@@@+...::::..  .@@@@@@@-   ....      ..:+%@@@-:.                               ");
+    writeln("                     ..#@@@#.::::::..  .:#@@@@=.             .#@@@@@=-:.                               ");
+    writeln("                     .*@@@=..:::::...   ...::...            .:@@@=...-:.                               ");
+    writeln("                  .:#@@@@+..::::..    .:....                .+@@@:  .:-..   ..:---:.                   ");
+    writeln("                 .=@@@@@#.........    .---:.                :@@@+    .:-:.. .-:..:-.                   ");
+    
+    writeln();
   }
 
   public void main()
@@ -244,6 +316,7 @@ export class Uno
     this.jogadores.sortearJogadorVez();
 
     this.adicionarPrimeiraCartaPilhaDescarte();
+
     this.comecarJogo();
     this.mostrarVencedor();
   }
