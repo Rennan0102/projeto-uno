@@ -14,18 +14,37 @@ import std.range;
 import std.typecons;
 import std.conv;
 
+/**
+ * Classe abstrata para executar a lógica de jogar uma carta em um jogo de Uno em D lang.
+ *
+ * Esta classe fornece métodos para executar a lógica associada a diferentes tipos de cartas do jogo Uno.
+ * Ela é projetada para ser estendida por classes concretas que implementam a lógica específica para cada tipo de carta.
+ */
 abstract class ExecutorCarta
 {
 
-    private Uno uno;
-    private ListaJogadores jogadores;
+    private Uno uno; ///< O jogo Uno ao qual esta instância está associada.
+    private ListaJogadores jogadores; ///< A lista de jogadores no jogo.
 
+    /**
+     * Construtor da classe ExecutorCarta.
+     *
+     * Params:
+     *   uno: O jogo Uno ao qual esta instância está associada.
+     */
     this(Uno uno)
     {
         this.uno = uno;
         this.jogadores = uno.getJogadores();
     }
 
+    /**
+     * Executa a jogada associada à carta fornecida.
+     * Este método é responsável por executar a ação correspondente à carta jogada.
+     *
+     * Params:
+     *   carta: A carta a ser jogada.
+     */
     public void jogarCarta(Carta carta)
     {
         string nomeCarta = carta.getNome();
@@ -56,12 +75,22 @@ abstract class ExecutorCarta
         }
     }
 
+    /**
+    * Executa a ação associada à carta Inverter em um jogo de Uno.
+    *
+    * Este método é chamado quando a carta Inverter é jogada e executa a ação correspondente, que é inverter a direção de rotação dos jogadores e passar a vez para o próximo jogador.
+    */
     protected void carta_Inverter()
     {
         jogadores.trocarSentidoRotacao();
         jogadores.mudarVezJogador();
     }
 
+    /**
+ * Executa a ação associada à carta Bloqueio em um jogo de Uno.
+ *
+ * Este método é chamado quando a carta Bloqueio é jogada e executa a ação correspondente, que é bloquear o próximo jogador e fazê-lo perder a vez.
+ */
     protected void carta_Bloqueio()
     {
         writeln();
@@ -72,6 +101,11 @@ abstract class ExecutorCarta
         jogadores.pularVezJogador();
     }
 
+    /**
+ * Executa a ação associada à carta Mais 2 em um jogo de Uno.
+ *
+ * Este método é chamado quando a carta Mais 2 é jogada e executa a ação correspondente, que é fazer o próximo jogador comprar duas cartas e perder a vez.
+ */
     protected void carta_Mais2()
     {
         writeln();
@@ -86,14 +120,33 @@ abstract class ExecutorCarta
     protected abstract void carta_Joker(Carta carta);
 }
 
+/**
+ * Classe para executar a lógica de jogar uma carta por um jogador controlado pelo computador em um jogo de Uno em D lang.
+ *
+ * Esta classe estende a classe abstrata ExecutorCarta e implementa a lógica específica para um jogador controlado pelo computador.
+ */
 class ExecutorCartaBot : ExecutorCarta
 {
 
+    /**
+     * Construtor da classe ExecutorCartaBot.
+     *
+     * Params:
+     *   uno: O jogo Uno ao qual esta instância está associada.
+     */
     this(Uno uno)
     {
         super(uno);
     }
-
+    
+    /**
+     * Executa a ação associada à carta Joker +4 em um jogo de Uno, para um jogador controlado pelo computador.
+     *
+     * Este método é chamado quando a carta Joker +4 é jogada por um jogador controlado pelo computador e executa a ação correspondente, que é escolher a cor mais comum das cartas na mão do jogador e fazer o próximo jogador comprar quatro cartas e perder a vez.
+     *
+     * Params:
+     *   carta: A carta Joker +4 jogada.
+     */
     public override void carta_JokerMais4(Carta carta)
     {
         Jogador jogador = uno.getJogadorVez();
@@ -127,6 +180,14 @@ class ExecutorCartaBot : ExecutorCarta
         jogadores.pularVezJogador();
     }
 
+    /**
+     * Executa a ação associada à carta Joker em um jogo de Uno, para um jogador controlado pelo computador.
+     *
+     * Este método é chamado quando a carta Joker é jogada por um jogador controlado pelo computador e executa a ação correspondente, que é escolher a cor mais comum das cartas na mão do jogador.
+     *
+     * Params:
+     *   carta: A carta Joker jogada.
+     */
     public override void carta_Joker(Carta carta)
     {
         Jogador jogador = uno.getJogadorVez();
@@ -155,14 +216,33 @@ class ExecutorCartaBot : ExecutorCarta
     }
 }
 
+/**
+ * Classe para executar a lógica de jogar uma carta por um jogador humano em um jogo de Uno em D lang.
+ *
+ * Esta classe estende a classe abstrata ExecutorCarta e implementa a lógica específica para um jogador humano.
+ */
 class ExecutorCartaJogador : ExecutorCarta
 {
 
+    /**
+     * Construtor da classe ExecutorCartaJogador.
+     *
+     * Params:
+     *   uno: O jogo Uno ao qual esta instância está associada.
+     */
     this(Uno uno)
     {
         super(uno);
     }
 
+    /**
+     * Executa a ação associada à carta Joker +4 em um jogo de Uno, para um jogador humano.
+     *
+     * Este método é chamado quando a carta Joker +4 é jogada por um jogador humano e executa a ação correspondente, que é permitir que o jogador escolha a cor da próxima jogada e fazer o próximo jogador comprar quatro cartas e perder a vez.
+     *
+     * Params:
+     *   carta: A carta Joker +4 jogada.
+     */
     public override void carta_JokerMais4(Carta carta)
     {
         writeln("Jogou a carta Joker +4.");
@@ -183,6 +263,14 @@ class ExecutorCartaJogador : ExecutorCarta
         jogadores.pularVezJogador();
     }
 
+    /**
+     * Executa a ação associada à carta Joker em um jogo de Uno, para um jogador humano.
+     *
+     * Este método é chamado quando a carta Joker é jogada por um jogador humano e executa a ação correspondente, que é permitir que o jogador escolha a cor da próxima jogada.
+     *
+     * Params:
+     *   carta: A carta Joker jogada.
+     */
     public override void carta_Joker(Carta carta)
     {
         writeln("Jogou a carta Joker.");
@@ -198,13 +286,23 @@ class ExecutorCartaJogador : ExecutorCarta
 
 }
 
+/**
+ * Classe responsável por definir e controlar as regras do jogo Uno.
+ *
+ * Esta classe gerencia as interações entre os jogadores, as cartas e as execuções das jogadas, garantindo que as regras do Uno sejam seguidas durante o jogo.
+ */
 export class RegrasUno
 {
-    private Uno uno;
-    private ListaJogadores jogadores;
-    private ExecutorCartaJogador executorCartaJogador;
-    private ExecutorCartaBot executorCartaBot;
+    private Uno uno; ///< O jogo Uno ao qual estas regras estão associadas
+    private ListaJogadores jogadores; ///< Lista de jogadores participantes do jogo
+    private ExecutorCartaJogador executorCartaJogador; ///< Executor de jogadas para um jogador humano
+    private ExecutorCartaBot executorCartaBot; ///< Executor de jogadas para um jogador bot
 
+    /**
+     * Construtor padrão da classe RegrasUno.
+     *
+     * Inicializa os membros privados com valores nulos.
+     */
     public this()
     {
         this.uno = null;
@@ -213,6 +311,12 @@ export class RegrasUno
         this.executorCartaJogador = null;
     }
 
+    /**
+     * Define o jogo Uno associado a estas regras.
+     *
+     * Params:
+     *   uno: O jogo Uno a ser associado a estas regras.
+     */
     public void setUno(Uno uno)
     {
         this.uno = uno;
@@ -221,6 +325,12 @@ export class RegrasUno
         this.executorCartaJogador = new ExecutorCartaJogador(uno);
     }
 
+    /**
+     * Permite que um jogador jogue uma carta no jogo Uno.
+     *
+     * Params:
+     *   carta: A carta a ser jogada pelo jogador.
+     */
     public void jogarCarta(Carta carta)
     {
         Jogador jogadorVez = jogadores.getJogadorVez();
@@ -236,7 +346,17 @@ export class RegrasUno
 
     }
 
-    // Não sei se é só isso
+    /**
+     * Verifica se o jogo Uno está finalizado.
+     *
+     * Este método verifica se o jogo Uno chegou ao fim, ou seja, se algum jogador ficou sem cartas na mão.
+     *
+     * Params:
+     *   jogadorVezAnterior: O jogador que jogou a última carta na rodada anterior.
+     *
+     * Returns:
+     *   true se o jogo estiver finalizado (um jogador venceu), false caso contrário.
+     */
     public bool verficiarSeJogoEstaFinalizado(Jogador jogadorVezAnterior)
     {
         return jogadorVezAnterior.getMaoCartas().length() == 0;
