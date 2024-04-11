@@ -3,31 +3,37 @@ module entidades.Uno;
 import std.stdio;
 import std.conv;
 import std.range;
+import std.string;
+import std.random : uniform, uniform01;
+import std.exception;
+
 import entidades.Carta;
 import entidades.Jogador;
 import entidades.Baralho;
 import entidades.RegrasUno;
 import entidades.Utils;
-import std.string;
-import std.random : uniform, uniform01;
+
 import core.thread;
-import std.exception;
 
 export class Uno
 {
-  public static int MAXIMO_JOGADORES = 7;
-  public static int NUMERO_CARTAS_JOGADOR = 7;
+  public static int MAXIMO_JOGADORES = 4; ///< Número máximo de jogadores permitidos no jogo Uno.
+  public static int NUMERO_CARTAS_JOGADOR = 7; ///< Número de cartas que cada jogador recebe no início do jogo.
 
-  private Baralho baralho;
-  private ListaJogadores jogadores;
-  private Stack!(Carta) cartasUsadas;
-  private bool jogoEncerrado;
-  private bool sentidoInvertidoRotacao;
-  private RegrasUno regrasUno;
-  private int totalJogadas;
-  private Jogador vencedor;
-  private string nomeJogador;
+  private Baralho baralho; ///< O baralho de cartas usado no jogo Uno.
+  private ListaJogadores jogadores; ///< A lista de jogadores participantes do jogo Uno.
+  private Stack!(Carta) cartasUsadas; ///< A pilha de descarte de cartas usadas no jogo Uno.
+  private bool jogoEncerrado; ///< Indica se o jogo Uno foi encerrado.
+  private bool sentidoInvertidoRotacao; ///< Indica a direção da ordem de turnos no jogo Uno.
+  private RegrasUno regrasUno; ///< As regras do jogo Uno.
+  private int totalJogadas; ///< O número total de jogadas feitas no jogo Uno.
+  private Jogador vencedor; ///< O jogador que venceu o jogo Uno.
+  private string nomeJogador; ///< O nome do jogador real que inicia o jogo Uno.
 
+  /**
+   * Construtor para o jogo Uno.
+   * @param regrasUno As regras do jogo Uno.
+   */
   public this(RegrasUno regrasUno)
   {
     this.baralho = new Baralho();
@@ -39,6 +45,9 @@ export class Uno
     this.totalJogadas = 0;
   }
 
+  /**
+   * Método para exibir a tela inicial do jogo.
+   */
   public void telaInicial()
   {
 
@@ -86,6 +95,9 @@ export class Uno
     Decoracao.limparTela();
   }
 
+  /**
+   * Método para gerar jogadores para o jogo Uno.
+   */
   public void gerarJogadores()
   {
 
@@ -115,6 +127,9 @@ export class Uno
     Decoracao.limparTela();
   }
 
+  /**
+   * Método para distribuir as cartas na primeira rodada para os jogadores.
+   */
   public void distribuirCartaJogadores()
   {
 
@@ -125,6 +140,9 @@ export class Uno
 
   }
 
+  /**
+   * Método para mostrar a lista de jogadores da partida.
+   */
   public void mostrarJogadores()
   {
 
@@ -142,6 +160,9 @@ export class Uno
     Decoracao.limparTela();
   }
 
+   /**
+   * Método para adicionar a primeira carta na pilha de descarte e, assim, começar o jogo.
+   */
   public void adicionarPrimeiraCartaPilhaDescarte()
   {
 
@@ -160,6 +181,9 @@ export class Uno
     }
   }
 
+  /**
+   * Método para iniciar o jogo, para gerar um fluxo de jogadas e mostrar ao usuário a dinâmica do jogo.
+   */
   public void comecarJogo()
   {
     Carta carta;
@@ -226,7 +250,6 @@ export class Uno
         }
 
         Decoracao.aMimir(2);
-        Decoracao.limparTela();
 
         continue;
       }
@@ -264,6 +287,9 @@ export class Uno
     }
   }
 
+  /**
+   * Método para repor as cartas do baralho após esgotarem.
+   */
   public void reporCartas()
   {
     auto cartas = baralho.getCartasBaralho();
@@ -278,6 +304,12 @@ export class Uno
     cartas.shuffle();
   }
 
+  /**
+   * Verifica se a carta jogada é válida de acordo com as regras do jogo Uno.
+   * 
+   * @param carta A carta jogada
+   * @throws JogadaInvalidaException Se a jogada não for válida
+   */
   public void testarCartaValida(Carta carta)
   {
     Carta cartaTopoPilha = this.getCartasUsadas().getLast();
@@ -312,6 +344,9 @@ export class Uno
     }
   }
 
+  /**
+   * Exibe o vencedor do jogo com algumas mensagens personalizadas.
+   */
   public void mostrarVencedor()
   {
     writeln();
@@ -411,10 +446,12 @@ export class Uno
     writeln();
   }
 
+  
+  /**
+   * Método principal para iniciar o jogo Uno.
+   */
   public void main()
   {
-    //this.telaInicial();
-
     this.baralho.gerarCartas();
     this.baralho.embaralharCartas();
 
@@ -433,51 +470,101 @@ export class Uno
   // -----------------------------------------------------------------------------------------------------------
   // Get e Setters
 
+  /**
+   * Obtém o jogador da vez.
+   * 
+   * @returns O jogador da vez
+   */
   public Jogador getJogadorVez()
   {
     return this.jogadores.getJogadorVez();
   }
 
+  /**
+   * Obtém o baralho do jogo.
+   * 
+   * @returns O baralho do jogo
+   */
   public Baralho getBaralho()
   {
     return baralho;
   }
 
+  /**
+   * Define um novo baralho para o jogo.
+   * 
+   * @param novoBaralho O novo baralho a ser definido
+   */
   public void setBaralho(Baralho novoBaralho)
   {
     baralho = novoBaralho;
   }
 
+  /**
+   * Obtém a lista de jogadores participantes do jogo.
+   * 
+   * @returns A lista de jogadores participantes
+   */
   public ListaJogadores getJogadores()
   {
     return this.jogadores;
   }
 
+  /**
+   * Obtém as cartas já jogadas.
+   * 
+   * @returns As cartas já jogadas
+   */
   public Stack!Carta getCartasUsadas()
   {
     return cartasUsadas;
   }
 
+  /**
+   * Define as cartas já jogadas.
+   * 
+   * @param novasCartasUsadas As novas cartas já jogadas
+   */
   public void setCartasUsadas(Stack!Carta novasCartasUsadas)
   {
     cartasUsadas = novasCartasUsadas;
   }
 
+  /**
+   * Verifica se o jogo está encerrado.
+   * 
+   * @returns true se o jogo estiver encerrado, caso contrário false
+   */
   public bool getJogoEncerrado()
   {
     return jogoEncerrado;
   }
 
+  /**
+   * Define se o jogo está encerrado.
+   * 
+   * @param novoJogoEncerrado O novo estado de encerramento do jogo
+   */
   public void setJogoEncerrado(bool novoJogoEncerrado)
   {
     jogoEncerrado = novoJogoEncerrado;
   }
 
+  /**
+   * Verifica se o sentido de rotação do jogo está invertido.
+   * 
+   * @returns true se o sentido de rotação estiver invertido, caso contrário false
+   */
   public bool getsentidoInvertidoRotacao()
   {
     return sentidoInvertidoRotacao;
   }
 
+  /**
+   * Define se o sentido de rotação do jogo está invertido.
+   * 
+   * @param novosentidoInvertidoRotacao O novo estado de inversão do sentido de rotação
+   */
   public void setsentidoInvertidoRotacao(bool novosentidoInvertidoRotacao)
   {
     sentidoInvertidoRotacao = novosentidoInvertidoRotacao;

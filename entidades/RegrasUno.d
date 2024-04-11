@@ -1,8 +1,7 @@
 module entidades.RegrasUno;
 
-import std.string;
+
 import entidades.Uno;
-import std.stdio;
 import entidades.Carta;
 import entidades.Utils;
 import entidades.Baralho;
@@ -13,6 +12,8 @@ import std.array;
 import std.range;
 import std.typecons;
 import std.conv;
+import std.stdio;
+import std.string;
 
 /**
  * Classe abstrata para executar a lógica de jogar uma carta em um jogo de Uno em D lang.

@@ -9,10 +9,11 @@ import std.array;
 import std.algorithm.iteration : map;
 import std.conv : to;
 import std.random;
+import std.format;
 
 import core.stdc.stdlib;
 import core.thread;
-import std.format;
+
 
 /**
  * Implementação de uma lista dinâmica.
@@ -363,7 +364,6 @@ class DataInput
                 if (selection >= 1 && selection <= sizeArray)
                 {   
                     writeln("\n".replicate(5));
-                    Decoracao.limparTela();
                     return elements[selection - 1];
                 }
                 else

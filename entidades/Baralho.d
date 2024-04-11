@@ -2,11 +2,12 @@ module entidades.Baralho;
 
 import entidades.Jogador;
 import entidades.Carta;
+import entidades.Utils;
 
 import std.container;
 import std.range;
 import std.random;
-import entidades.Utils;
+
 
 export class Baralho
 {

@@ -1,8 +1,9 @@
 module entidades.Carta;
 
 import std.stdio;
-import entidades.Jogador;
 import std.format;
+
+import entidades.Jogador;
 
 /**
  * Classe que representa uma carta do jogo Uno.
